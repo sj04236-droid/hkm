@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="여행사 엔트리, PNR 분석, 고객 CRM, 견적, 여권/APIS, 매출·매입 장부를 한 곳에서 관리하는 업무 자동화 데스크" />
+  <title>ATR Travel Ops</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <strong>ATR Travel Ops</strong>
+          <span>여행사 업무 자동화</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="주요 메뉴">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span>대시보드</button>
+        <button class="nav-item" data-view="entries"><span>⌕</span>엔트리 도우미</button>
+        <button class="nav-item" data-view="pnr"><span>✦</span>PNR·규정 분석</button>
+        <button class="nav-item" data-view="customers"><span>◎</span>고객 CRM</button>
+        <button class="nav-item" data-view="passport"><span>▣</span>여권·APIS</button>
+        <button class="nav-item" data-view="quotes"><span>▤</span>견적서</button>
+        <button class="nav-item" data-view="ledger"><span>₩</span>매출·매입 장부</button>
+        <button class="nav-item" data-view="tasks"><span>✓</span>마감 일정</button>
+      </nav>
+
+      <div class="sidebar-note">
+        <strong>Private workspace</strong>
+        <span>업무용 MVP · 현재 데이터는 이 브라우저에 저장됩니다.</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-button mobile-only" id="menuBtn" aria-label="메뉴 열기">☰</button>
+        <div>
+          <p class="eyebrow" id="todayLabel"></p>
+          <h1 id="pageTitle">대시보드</h1>
+        </div>
+        <div class="top-actions">
+          <button class="button ghost" id="resetDemoBtn">데모 데이터 초기화</button>
+          <button class="button primary" data-go="quotes">+ 새 견적</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="hero-panel">
+          <div>
+            <p class="eyebrow">오늘 해야 할 일을 먼저</p>
+            <h2>발권 마감과 손익을 한 화면에서 확인하세요.</h2>
+            <p>견적, 여권 미등록, 결제 대기, TKT TL을 놓치지 않도록 업무 흐름을 한 곳에 묶었습니다.</p>
+          </div>
+          <button class="button light" data-go="pnr">PNR 분석 시작 →</button>
+        </div>
+
+        <div class="metric-grid" id="taskMetrics"></div>
+
+        <div class="dashboard-grid">
+          <article class="card span-2">
+            <div class="card-head">
+              <div><p class="eyebrow">이번 달 손익</p><h3>매출 · 매입 · 순수익</h3></div>
+              <button class="text-button" data-go="ledger">장부 보기 →</button>
+            </div>
+            <div class="finance-summary" id="financeSummary"></div>
+            <div class="payment-breakdown" id="paymentBreakdown"></div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><p class="eyebrow">오늘 일정</p><h3>TKT TL / 결제 마감</h3></div></div>
+            <div id="todayTasks" class="task-list"></div>
+          </article>
+
+          <article class="card span-2">
+            <div class="card-head"><div><p class="eyebrow">빠른 실행</p><h3>자주 쓰는 업무</h3></div></div>
+            <div class="quick-grid">
+              <button class="quick-action" data-go="entries"><span>⌕</span><strong>엔트리 찾기</strong><small>Amadeus / Sabre·Abacus</small></button>
+              <button class="quick-action" data-go="pnr"><span>✦</span><strong>PNR 붙여넣기</strong><small>운임·규정 자동 요약</small></button>
+              <button class="quick-action" data-go="customers"><span>◎</span><strong>고객 등록</strong><small>회사·마일리지·연락처</small></button>
+              <button class="quick-action" data-go="ledger"><span>₩</span><strong>거래 등록</strong><small>매출·매입·부가세</small></button>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head"><div><p class="eyebrow">최근 거래</p><h3>최신 5건</h3></div></div>
+            <div id="recentLedger" class="compact-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-entries">
+        <div class="section-intro">
+          <div><p class="eyebrow">검증된 엔트리 지식베이스</p><h2>질문하듯 찾고 바로 복사하세요.</h2><p>검색 결과는 저장된 엔트리 자료를 기준으로 보여주며, 모르는 명령어를 임의로 만들지 않습니다.</p></div>
+        </div>
+        <div class="toolbar card">
+          <input class="input grow" id="entrySearch" placeholder="예: 공시운임, 규정, 재발행, FQN, WPNC" />
+          <select class="input" id="entryGds"><option value="all">전체 GDS</option><option value="Amadeus">Amadeus</option><option value="Sabre/Abacus">Sabre/Abacus</option></select>
+        </div>
+        <div class="entry-grid" id="entryResults"></div>
+      </section>
+
+      <section class="view" id="view-pnr">
+        <div class="section-intro"><div><p class="eyebrow">PNR / FQQ / FQN</p><h2>단말기 결과를 붙여넣으면 핵심만 정리합니다.</h2><p>항공편, 클래스, Fare Basis, 총액, Fare Family, 변경·환불 문구를 자동 추출합니다.</p></div></div>
+        <div class="split-grid">
+          <article class="card">
+            <label class="field-label" for="pnrInput">단말기 결과 붙여넣기</label>
+            <textarea id="pnrInput" class="textarea code-area" rows="20" placeholder="FQQ1 또는 FQN 규정 내용을 여기에 붙여넣으세요."></textarea>
+            <div class="form-actions"><button class="button ghost" id="pnrSampleBtn">샘플 넣기</button><button class="button primary" id="analyzePnrBtn">AI형 자동 정리</button></div>
+          </article>
+          <article class="card analysis-card">
+            <div class="card-head"><div><p class="eyebrow">분석 결과</p><h3>고객 안내용 요약</h3></div><button class="text-button" id="copyAnalysisBtn">복사</button></div>
+            <div id="pnrAnalysis" class="empty-state">왼쪽에 PNR/FQQ/FQN 내용을 넣고 분석을 실행하세요.</div>
+            <button class="button primary full hidden" id="analysisToQuoteBtn">이 내용으로 견적서 만들기 →</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-customers">
+        <div class="section-intro"><div><p class="eyebrow">Customer CRM</p><h2>고객과 회사 정보를 한 번만 등록하세요.</h2><p>영문명, 연락처, 소속, 마일리지와 선호 좌석을 저장해 다음 견적에 재사용합니다.</p></div><button class="button primary" id="toggleCustomerForm">+ 고객 등록</button></div>
+        <div class="card hidden" id="customerFormCard">
+          <form id="customerForm" class="form-grid">
+            <label>한글명<input class="input" name="nameKo" required /></label>
+            <label>여권 영문명<input class="input" name="nameEn" placeholder="HONG/GILDONG" /></label>
+            <label>생년월일<input class="input" type="date" name="birth" /></label>
+            <label>휴대폰<input class="input" name="phone" /></label>
+            <label>이메일<input class="input" type="email" name="email" /></label>
+            <label>회사명<input class="input" name="company" /></label>
+            <label>부서<input class="input" name="department" /></label>
+            <label>직급<input class="input" name="title" /></label>
+            <label>마일리지<input class="input" name="mileage" placeholder="KE 123456789 / OZ ..." /></label>
+            <label>선호 좌석<input class="input" name="seat" placeholder="통로 / 창가 / 앞좌석" /></label>
+            <label class="span-2">메모<textarea class="textarea" name="note" rows="3"></textarea></label>
+            <div class="form-actions span-2"><button type="button" class="button ghost" id="cancelCustomerBtn">취소</button><button class="button primary">저장</button></div>
+          </form>
+        </div>
+        <div class="customer-grid" id="customerList"></div>
+      </section>
+
+      <section class="view" id="view-passport">
+        <div class="section-intro"><div><p class="eyebrow">Sensitive data</p><h2>여권 · APIS · 보험 정보를 고객별로 연결합니다.</h2><p>이 MVP에서는 입력 데이터와 작은 이미지 파일을 현재 브라우저에만 저장합니다. 실제 운영 전에는 서버 암호화·권한·보관기간 정책을 적용하세요.</p></div></div>
+        <div class="split-grid">
+          <article class="card">
+            <form id="passportForm" class="form-grid">
+              <label class="span-2">고객<select class="input" id="passportCustomer" required></select></label>
+              <label>여권 영문 성<input class="input" name="surname" /></label>
+              <label>여권 영문 이름<input class="input" name="givenName" /></label>
+              <label>여권번호<input class="input" name="passportNo" /></label>
+              <label>국적<input class="input" name="nationality" value="KOR" /></label>
+              <label>성별<select class="input" name="gender"><option value="">선택</option><option>M</option><option>F</option></select></label>
+              <label>생년월일<input class="input" type="date" name="birth" /></label>
+              <label>여권 만료일<input class="input" type="date" name="expiry" /></label>
+              <label>발급국<input class="input" name="issueCountry" value="KOR" /></label>
+              <label class="span-2">여행자보험용 정보 메모<textarea class="textarea" name="insuranceNote" rows="3" placeholder="보험 가입에 필요한 정보만 최소한으로 기록"></textarea></label>
+              <label class="span-2 file-box">여권 파일 업로드<input type="file" id="passportFile" accept="image/*,.pdf" /><small>2MB 이하 파일을 권장합니다. 파일은 현재 브라우저 저장소에만 보관됩니다.</small></label>
+              <div class="form-actions span-2"><button class="button primary">고객 여권정보 저장</button></div>
+            </form>
+          </article>
+          <article class="card">
+            <div class="card-head"><div><p class="eyebrow">저장 상태</p><h3>고객별 여권/APIS</h3></div></div>
+            <div id="passportList" class="compact-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-quotes">
+        <div class="section-intro"><div><p class="eyebrow">Quotation</p><h2>PNR 분석 결과를 손님용 견적서로 바꿉니다.</h2><p>고객과 항공 일정, 규정, 금액을 한 장으로 정리하고 인쇄/PDF 저장이 가능합니다.</p></div></div>
+        <div class="split-grid quote-layout">
+          <article class="card">
+            <form id="quoteForm" class="form-grid">
+              <label class="span-2">고객<select class="input" id="quoteCustomer"></select></label>
+              <label class="span-2">견적 제목<input class="input" name="title" value="항공권 견적 안내" /></label>
+              <label class="span-2">여정 / 항공편<textarea class="textarea" name="itinerary" rows="5" placeholder="SEL–OSA OZ1145 C ..."></textarea></label>
+              <label>항공 운임<input class="input money-input" type="number" name="fare" value="0" /></label>
+              <label>세금 / 유류할증료<input class="input money-input" type="number" name="tax" value="0" /></label>
+              <label>서비스피<input class="input money-input" type="number" name="service" value="0" /></label>
+              <label>기타<input class="input money-input" type="number" name="other" value="0" /></label>
+              <label class="span-2">변경·환불·수하물 안내<textarea class="textarea" name="rules" rows="6"></textarea></label>
+              <div class="form-actions span-2"><button type="button" class="button ghost" id="saveQuoteBtn">견적 저장</button><button type="button" class="button primary" id="printQuoteBtn">인쇄 / PDF</button></div>
+            </form>
+          </article>
+          <article class="card quote-preview" id="quotePreview"></article>
+        </div>
+      </section>
+
+      <section class="view" id="view-ledger">
+        <div class="section-intro"><div><p class="eyebrow">Sales & expense ledger</p><h2>거래일 기준으로 매출·매입·순수익을 관리합니다.</h2><p>현금·카드·계좌이체를 구분하고 공급가액·부가세액까지 같이 기록합니다.</p></div><button class="button primary" id="toggleLedgerForm">+ 거래 등록</button></div>
+        <div class="card hidden" id="ledgerFormCard">
+          <form id="ledgerForm" class="form-grid ledger-form">
+            <label>날짜<input class="input" type="date" name="date" required /></label>
+            <label>매출 항목<input class="input" name="item" required placeholder="항공권 / 호텔 / 서비스피" /></label>
+            <label>거래번호<input class="input" name="tradeNo" placeholder="자동 생성" /></label>
+            <label>고객/거래처<input class="input" name="client" /></label>
+            <label>거래 종류<select class="input" name="payment"><option>현금</option><option>카드</option><option>계좌이체</option><option>기타</option></select></label>
+            <label>부가세 유형<select class="input" name="vatType"><option value="taxable">과세 10%</option><option value="zero">면세/영세</option><option value="manual">직접 입력</option></select></label>
+            <label>매출액<input class="input" type="number" name="sales" value="0" /></label>
+            <label>매입액<input class="input" type="number" name="purchase" value="0" /></label>
+            <label>카드/외부 수수료<input class="input" type="number" name="fee" value="0" /></label>
+            <label>기타비용<input class="input" type="number" name="otherCost" value="0" /></label>
+            <label>공급가액<input class="input" type="number" name="supply" value="0" /></label>
+            <label>부가세액<input class="input" type="number" name="vat" value="0" /></label>
+            <label class="span-2">메모<input class="input" name="memo" /></label>
+            <div class="calc-strip span-2" id="ledgerCalc">예상 순수익 0원</div>
+            <div class="form-actions span-2"><button type="button" class="button ghost" id="cancelLedgerBtn">취소</button><button class="button primary">거래 저장</button></div>
+          </form>
+        </div>
+
+        <div class="summary-row" id="ledgerSummary"></div>
+        <article class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>날짜</th><th>거래번호</th><th>매출 항목</th><th>거래종류</th><th class="num">매출액</th><th class="num">매입액</th><th class="num">공급가액</th><th class="num">부가세액</th><th class="num">순수익</th><th></th></tr></thead>
+              <tbody id="ledgerBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="view" id="view-tasks">
+        <div class="section-intro"><div><p class="eyebrow">Deadline control</p><h2>발권·결제·여권 마감을 놓치지 않게 관리합니다.</h2><p>TKT TL, 호텔 결제일, 네임리스트, 출발 전 확인 업무를 한 목록에서 봅니다.</p></div><button class="button primary" id="toggleTaskForm">+ 일정 추가</button></div>
+        <div class="card hidden" id="taskFormCard">
+          <form id="taskForm" class="form-grid">
+            <label>날짜<input class="input" type="date" name="date" required /></label>
+            <label>시간<input class="input" type="time" name="time" /></label>
+            <label>업무 종류<select class="input" name="type"><option>TKT TL</option><option>결제 마감</option><option>여권/APIS</option><option>네임리스트</option><option>출발 확인</option></select></label>
+            <label>고객/회사<input class="input" name="client" required /></label>
+            <label class="span-2">내용<input class="input" name="detail" placeholder="KE / SIN / 발권 완료 확인" /></label>
+            <div class="form-actions span-2"><button class="button primary">저장</button></div>
+          </form>
+        </div>
+        <div class="card"><div id="allTasks" class="task-list large"></div></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
