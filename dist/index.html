@@ -161,7 +161,7 @@
               <label>여권 만료일<input class="input" type="date" name="expiry" /></label>
               <label>발급국<input class="input" name="issueCountry" value="KOR" /></label>
               <label class="span-2">여행자보험용 정보 메모<textarea class="textarea" name="insuranceNote" rows="3" placeholder="보험 가입에 필요한 정보만 최소한으로 기록"></textarea></label>
-              <label class="span-2 file-box">여권 파일 업로드<input type="file" id="passportFile" accept="image/*,.pdf" /><small>2MB 이하 파일을 권장합니다. 파일은 현재 브라우저 저장소에만 보관됩니다.</small></label>
+              <label class="span-2 file-box">여권 파일 업로드<input type="file" id="passportFile" accept="image/*,.pdf" /><small>이미지 또는 PDF 첫 페이지의 여권 MRZ를 자동 인식해 성·이름·여권번호·국적·생년월일·성별·만료일·발급국을 채웁니다. 자동 입력 후 반드시 원본과 대조하세요.</small><span class="passport-ocr-status" id="passportOcrStatus" aria-live="polite">파일을 선택하면 자동으로 읽습니다.</span></label>
               <div class="form-actions span-2"><button class="button primary">고객 여권정보 저장</button></div>
             </form>
           </article>
@@ -243,6 +243,8 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

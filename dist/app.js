@@ -163,7 +163,78 @@ document.getElementById('customerList').onclick=e=>{const id=e.target.closest('[
 function renderPassports(){
   const rows=state.customers.filter(c=>state.passports[c.id]); document.getElementById('passportList').innerHTML=rows.length?rows.map(c=>{const p=state.passports[c.id];return `<div class="compact-item"><div><strong>${escapeHtml(c.nameKo)} · ${escapeHtml(p.surname||'')} ${escapeHtml(p.givenName||'')}</strong><small>${escapeHtml(p.passportNo||'-')} · 만료 ${escapeHtml(p.expiry||'-')}${p.fileName?` · ${escapeHtml(p.fileName)}`:''}</small></div><span class="badge ok">등록</span></div>`}).join(''):'<div class="empty-state">저장된 여권/APIS 정보가 없습니다.</div>';
 }
-document.getElementById('passportForm').onsubmit=async e=>{e.preventDefault();const cid=document.getElementById('passportCustomer').value;if(!cid)return toast('고객을 선택해주세요.');const data=Object.fromEntries(new FormData(e.currentTarget).entries());delete data[''];const file=document.getElementById('passportFile').files[0];if(file&&file.size>2*1024*1024)return toast('파일은 2MB 이하로 등록해주세요.');if(file){data.fileName=file.name;data.fileType=file.type;data.fileData=await fileToData(file);}state.passports[cid]=data;saveState();toast('여권/APIS 정보를 저장했습니다.');};
+function setPassportOcrStatus(message,type=''){
+  const el=document.getElementById('passportOcrStatus');
+  el.textContent=message; el.className=`passport-ocr-status ${type}`.trim();
+}
+function cleanMrzLine(value=''){
+  return value.toUpperCase().replace(/[«‹]/g,'<').replace(/\s/g,'').replace(/[^A-Z0-9<]/g,'');
+}
+function mrzDateToIso(value,type){
+  if(!/^\d{6}$/.test(value)) return '';
+  const yy=Number(value.slice(0,2)), mm=value.slice(2,4), dd=value.slice(4,6), nowYY=new Date().getFullYear()%100;
+  const year=type==='expiry'?2000+yy:(yy>nowYY?1900+yy:2000+yy);
+  const iso=`${year}-${mm}-${dd}`, date=new Date(Date.UTC(year,Number(mm)-1,Number(dd)));
+  return Number.isNaN(date.getTime())||date.getUTCMonth()+1!==Number(mm)||date.getUTCDate()!==Number(dd)?'':iso;
+}
+function parsePassportMrz(text=''){
+  const lines=text.split(/\r?\n/).map(cleanMrzLine).filter(x=>x.length>=25);
+  let firstIndex=lines.findIndex(x=>x.includes('P<'));
+  if(firstIndex<0){
+    const flat=cleanMrzLine(text), start=flat.indexOf('P<');
+    if(start>=0&&flat.length-start>=80){ lines.push(flat.slice(start,start+44),flat.slice(start+44,start+88)); firstIndex=lines.length-2; }
+  }
+  if(firstIndex<0) return null;
+  let line1=lines[firstIndex], p=line1.indexOf('P<'); if(p>0) line1=line1.slice(p);
+  const line2=lines.slice(firstIndex+1).find(x=>x.length>=35&&!x.startsWith('P<'))||'';
+  if(line1.length<30||line2.length<27) return null;
+  const names=line1.slice(5).split('<<'), surname=(names.shift()||'').replace(/</g,' ').trim(), givenName=names.join(' ').replace(/</g,' ').replace(/\s+/g,' ').trim();
+  const passportNo=line2.slice(0,9).replace(/</g,''), nationality=line2.slice(10,13).replace(/</g,''), birthRaw=line2.slice(13,19).replace(/O/g,'0'), gender=line2.slice(20,21), expiryRaw=line2.slice(21,27).replace(/O/g,'0');
+  return {surname,givenName,passportNo,nationality,birth:mrzDateToIso(birthRaw,'birth'),gender:/^[MF]$/.test(gender)?gender:'',expiry:mrzDateToIso(expiryRaw,'expiry'),issueCountry:line1.slice(2,5).replace(/</g,'')};
+}
+function fillPassportFields(data){
+  const form=document.getElementById('passportForm');
+  ['surname','givenName','passportNo','nationality','birth','gender','expiry','issueCountry'].forEach(key=>{ if(data[key]&&form.elements[key]) form.elements[key].value=data[key]; });
+}
+function imageToCanvas(source){
+  const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d'), width=source.width||source.naturalWidth, height=source.height||source.naturalHeight;
+  canvas.width=Math.max(1,width);canvas.height=Math.max(1,height);ctx.drawImage(source,0,0,width,height,0,0,width,height);return canvas;
+}
+function cropMrzArea(source){
+  const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d'), width=source.width||source.naturalWidth, height=source.height||source.naturalHeight;
+  const top=Math.floor(height*.58), cropHeight=Math.max(1,height-top); canvas.width=Math.max(1,width); canvas.height=cropHeight;
+  ctx.drawImage(source,0,top,width,cropHeight,0,0,width,cropHeight); return canvas;
+}
+function loadImageFromFile(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);resolve(img)};img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('이미지를 열 수 없습니다.'))};img.src=url;});}
+async function passportFileToSources(file){
+  if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')){
+    if(!window.pdfjsLib) throw new Error('PDF 읽기 모듈을 불러오지 못했습니다.');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf=await window.pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise, page=await pdf.getPage(1), viewport=page.getViewport({scale:2});
+    const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise; return [cropMrzArea(canvas),canvas];
+  }
+  const image=await loadImageFromFile(file), full=imageToCanvas(image); return [cropMrzArea(full),full];
+}
+async function autoReadPassport(file){
+  if(!file) return;
+  if(file.size>10*1024*1024){setPassportOcrStatus('자동 인식은 10MB 이하 파일을 사용해주세요.','error');return;}
+  if(!window.Tesseract){setPassportOcrStatus('OCR 모듈을 불러오지 못했습니다. 네트워크 연결을 확인해주세요.','error');return;}
+  try{
+    setPassportOcrStatus('여권 하단 MRZ를 읽는 중입니다…','working');
+    const sources=await passportFileToSources(file); let parsed=null;
+    for(let i=0;i<sources.length&&!parsed;i++){
+      const result=await window.Tesseract.recognize(sources[i],'eng',{logger:m=>{if(m.status==='recognizing text')setPassportOcrStatus(`${i?'전체 페이지 재확인':'MRZ 인식'} 중… ${Math.round((m.progress||0)*100)}%`,'working');}});
+      parsed=parsePassportMrz(result?.data?.text||'');
+    }
+    if(!parsed) throw new Error('MRZ 2줄을 정확히 찾지 못했습니다. 여권 하단이 선명하게 보이는 파일을 사용해주세요.');
+    fillPassportFields(parsed);
+    setPassportOcrStatus('자동 입력 완료: 성·이름·여권번호·국적·생년월일·성별·만료일·발급국을 원본과 확인해주세요.','success');
+    toast('여권 정보를 자동 입력했습니다.');
+  }catch(error){setPassportOcrStatus(error?.message||'여권 자동 인식에 실패했습니다.','error');}
+}
+document.getElementById('passportFile').addEventListener('change',e=>autoReadPassport(e.target.files[0]));
+document.getElementById('passportForm').onsubmit=async e=>{e.preventDefault();const cid=document.getElementById('passportCustomer').value;if(!cid)return toast('고객을 선택해주세요.');const data=Object.fromEntries(new FormData(e.currentTarget).entries());delete data[''];const file=document.getElementById('passportFile').files[0];if(file){data.fileName=file.name;data.fileType=file.type;if(file.size<=2*1024*1024)data.fileData=await fileToData(file);else data.fileStored=false;}state.passports[cid]=data;saveState();toast(file&&file.size>2*1024*1024?'여권 정보는 저장했고 2MB 초과 원본 파일은 브라우저에 보관하지 않았습니다.':'여권/APIS 정보를 저장했습니다.');};
 function fileToData(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
 
 function fillQuoteFromAnalysis(){const a=state.lastAnalysis;if(!a)return;const f=document.getElementById('quoteForm');f.elements.itinerary.value=a.flights.map(x=>`${x.airline}${x.flight} ${x.date} ${x.time} ${x.cls} ${x.fareBasis}`).join('\n');f.elements.fare.value=a.total||0;f.elements.rules.value=`변경: ${a.change}\n환불: ${a.cancel}${a.family?`\nFare Family: ${a.family}`:''}${a.ttl?`\n발권기한: ${a.ttl}`:''}`;renderQuotePreview();}
