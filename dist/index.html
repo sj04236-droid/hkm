@@ -96,10 +96,16 @@
         <div class="section-intro">
           <div><p class="eyebrow">검증된 엔트리 지식베이스</p><h2>질문하듯 찾고 바로 복사하세요.</h2><p>검색 결과는 저장된 엔트리 자료를 기준으로 보여주며, 모르는 명령어를 임의로 만들지 않습니다.</p></div>
         </div>
-        <div class="toolbar card">
-          <input class="input grow" id="entrySearch" placeholder="예: 공시운임, 규정, 재발행, FQN, WPNC" />
-          <select class="input" id="entryGds"><option value="all">전체 GDS</option><option value="Amadeus">Amadeus</option><option value="Sabre/Abacus">Sabre/Abacus</option></select>
+        <div class="toolbar card entry-toolbar">
+          <select class="input entry-gds" id="entryGds" aria-label="GDS 선택">
+            <option value="">GDS를 먼저 선택하세요</option>
+            <option value="Sabre/Abacus">Sabre / Abacus</option>
+            <option value="Amadeus">Amadeus</option>
+          </select>
+          <input class="input grow" id="entrySearch" placeholder="예: 과거일자 운임 조회하는 거 엔트리 알려줘" disabled />
+          <button class="button primary" id="entryAskBtn" disabled>엔트리 찾기</button>
         </div>
+        <div class="entry-answer hidden" id="entryAnswer" aria-live="polite"></div>
         <div class="entry-grid" id="entryResults"></div>
       </section>
 

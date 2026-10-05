@@ -23,23 +23,23 @@ const demo = {
 };
 
 const entryKB = [
-  {gds:'Sabre/Abacus',title:'기본 항공사 지정 공시운임 조회',code:'FQSELBJS-OZ',desc:'서울-베이징, 아시아나 지정 운임 조회 예시',tags:'공시운임 운임조회 FQ'},
-  {gds:'Sabre/Abacus',title:'출발일 지정 공시운임 조회',code:'FQSELBJS01DEC-OZ',desc:'출발일을 함께 지정하는 운임 조회',tags:'날짜 운임조회'},
-  {gds:'Sabre/Abacus',title:'과거일자 운임 조회',code:'FQ10DEC20SELSIN30DEC10-OZ',desc:'과거 발권/여행일자 조건을 포함한 운임 조회 예시',tags:'과거일자 운임'},
-  {gds:'Sabre/Abacus',title:'부킹클래스 지정 운임 조회',code:'FQSELSIN20SEP¥BM-OZ',desc:'M 클래스 조건 운임 조회 예시',tags:'부킹클래스 M'},
-  {gds:'Sabre/Abacus',title:'Availability 후 구간운임 조회',code:'FQL1',desc:'조회한 1번 라인 기준 구간 운임',tags:'어밸리티 구간운임'},
-  {gds:'Sabre/Abacus',title:'PNR 후 구간운임 조회',code:'FQS1',desc:'PNR 1번 구간 기준 운임 조회',tags:'PNR 구간운임'},
-  {gds:'Sabre/Abacus',title:'최종 운임 화면 재조회',code:'FQ*',desc:'직전 FQ 결과 재조회',tags:'재조회'},
-  {gds:'Sabre/Abacus',title:'운임 규정 전체 조회',code:'RD3',desc:'선택된 3번 운임의 규정 전체 조회',tags:'규정 룰'},
-  {gds:'Sabre/Abacus',title:'운임 규정 메뉴 조회',code:'RD3*M',desc:'3번 운임 규정의 메뉴 화면',tags:'규정 메뉴'},
-  {gds:'Sabre/Abacus',title:'PNR 최저운임 계산',code:'WPNCS',desc:'PNR 최저 운임 계산 관련 저장 엔트리',tags:'최저운임 프라이싱'},
-  {gds:'Sabre/Abacus',title:'PNR 운임 계산',code:'WPNC',desc:'PNR 운임 계산 관련 저장 엔트리',tags:'프라이싱'},
-  {gds:'Amadeus',title:'Fare Quote 상세 보기',code:'FQQ1',desc:'1번 Fare Quote의 상세 운임, Tax, Fare Basis 확인',tags:'FQQ 운임 상세'},
-  {gds:'Amadeus',title:'Fare Note 목록',code:'FQN1',desc:'1번 운임의 Fare Component/규정 항목 확인',tags:'FQN 규정'},
-  {gds:'Amadeus',title:'Penalty 규정',code:'FQN1-1//PE',desc:'1번 운임, 1번 Fare Component의 변경·환불 Penalty 확인',tags:'PE 환불 변경 penalty'},
-  {gds:'Amadeus',title:'Sales Restriction',code:'FQN1-1//SR',desc:'판매/발권 제한 규정 확인',tags:'SR 발권 제한'},
-  {gds:'Amadeus',title:'Flight Restriction',code:'FQN1-1//FL',desc:'적용 항공편/운항 제한 확인',tags:'FL flight 제한'},
-  {gds:'Amadeus',title:'Combinability',code:'FQN1-1//CO',desc:'운임 결합 규정 확인',tags:'CO combinability'}
+  {gds:'Sabre/Abacus',title:'기본 항공사 지정 공시운임 조회',code:'FQSELBJS-OZ',desc:'서울-베이징, 아시아나 지정 운임 조회 예시',tags:'공시운임 운임조회 FQ 기본 항공사 지정',aliases:['공시운임 알려줘','기본 운임 조회','항공사 지정 운임'],guide:'출발지/도착지와 항공사를 지정해 공시운임을 조회하는 기본 형식입니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'출발일 지정 공시운임 조회',code:'FQSELBJS01DEC-OZ',desc:'출발일을 함께 지정하는 운임 조회',tags:'날짜 출발일 운임조회 공시운임',aliases:['출발일 지정 운임','날짜 넣어서 운임 조회','출발 날짜 운임'],guide:'기본 공시운임 조회 형식에 출발일을 함께 지정합니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'과거일자 운임 조회',code:'FQ10DEC20SELSIN30DEC10-OZ',desc:'과거일자 운임 조회 예시',tags:'과거일자 과거 날짜 예전 운임 운임조회 historical fare',aliases:['과거일자 운임 조회','과거 운임 조회','예전 날짜 운임','옛날 운임','과거 발권 운임'],guide:'자료 기준 과거일자 운임 조회는 발권일과 출발일을 함께 지정해야 하며, 최대 2년 범위로 안내되어 있습니다. 아래 엔트리는 형식 확인용 예시입니다.',source:'Sabre / Abacus 운임·발권 자료'},
+  {gds:'Sabre/Abacus',title:'부킹클래스 지정 운임 조회',code:'FQSELSIN20SEP¥BM-OZ',desc:'M 클래스 조건 운임 조회 예시',tags:'부킹클래스 booking class M 운임조회',aliases:['클래스 지정 운임','부킹 클래스 운임','M클래스 운임'],guide:'출발일과 함께 특정 Booking Class 조건을 지정해 운임을 조회합니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'Availability 후 구간운임 조회',code:'FQL1',desc:'조회한 1번 라인 기준 구간 운임',tags:'어밸리티 availability 구간운임 라인',aliases:['어밸리티 후 운임','availability 운임','조회 후 구간운임'],guide:'Availability 조회 결과의 지정 라인을 기준으로 구간 운임을 이어서 확인합니다.',source:'Sabre / Abacus 예약·운임 자료'},
+  {gds:'Sabre/Abacus',title:'PNR 후 구간운임 조회',code:'FQS1',desc:'PNR 1번 구간 기준 운임 조회',tags:'PNR 구간운임 운임조회',aliases:['pnr 운임 조회','예약 후 운임','pnr 구간 운임'],guide:'현재 PNR의 지정 구간을 기준으로 운임을 조회합니다.',source:'Sabre / Abacus 예약·운임 자료'},
+  {gds:'Sabre/Abacus',title:'최종 운임 화면 재조회',code:'FQ*',desc:'직전 FQ 결과 재조회',tags:'재조회 최종 화면 FQ',aliases:['운임 다시 보기','직전 운임 재조회'],guide:'직전에 조회한 FQ 결과 화면을 다시 호출합니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'운임 규정 전체 조회',code:'RD3',desc:'선택된 3번 운임의 규정 전체 조회',tags:'규정 룰 rule 전체',aliases:['운임 규정 전체','규정 전체 조회','룰 전체'],guide:'운임 목록에서 선택한 번호의 전체 규정을 조회합니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'운임 규정 메뉴 조회',code:'RD3*M',desc:'3번 운임 규정의 메뉴 화면',tags:'규정 메뉴 rule menu',aliases:['규정 메뉴','룰 메뉴'],guide:'선택한 운임의 규정 카테고리 메뉴를 먼저 확인할 때 사용합니다.',source:'Sabre / Abacus 운임 자료'},
+  {gds:'Sabre/Abacus',title:'PNR 최저운임 계산',code:'WPNCS',desc:'PNR 최저 운임 계산 관련 저장 엔트리',tags:'최저운임 프라이싱 pricing',aliases:['최저운임 계산','pnr 최저가','최저 프라이싱'],guide:'현재 PNR을 기준으로 최저운임 계산에 사용하는 저장 엔트리입니다.',source:'Sabre / Abacus 운임·발권 자료'},
+  {gds:'Sabre/Abacus',title:'PNR 운임 계산',code:'WPNC',desc:'PNR 운임 계산 관련 저장 엔트리',tags:'프라이싱 pricing PNR 계산',aliases:['pnr 운임 계산','운임 계산','프라이싱'],guide:'현재 PNR 기준 운임 계산에 사용하는 저장 엔트리입니다.',source:'Sabre / Abacus 운임·발권 자료'},
+  {gds:'Amadeus',title:'Fare Quote 상세 보기',code:'FQQ1',desc:'1번 Fare Quote의 상세 운임, Tax, Fare Basis 확인',tags:'FQQ 운임 상세 fare quote',aliases:['운임 상세','fare quote 상세','세금 fare basis 확인'],guide:'선택한 Fare Quote의 운임 구성과 세금, Fare Basis를 확인합니다.',source:'Amadeus 발권 자료'},
+  {gds:'Amadeus',title:'Fare Note 목록',code:'FQN1',desc:'1번 운임의 Fare Component/규정 항목 확인',tags:'FQN 규정 fare note',aliases:['fqn 규정','fare note','운임 규정 목록'],guide:'선택한 운임의 Fare Component와 규정 카테고리를 확인합니다.',source:'Amadeus 발권 자료'},
+  {gds:'Amadeus',title:'Penalty 규정',code:'FQN1-1//PE',desc:'1번 운임, 1번 Fare Component의 변경·환불 Penalty 확인',tags:'PE 환불 변경 penalty 페널티',aliases:['변경 환불 규정','penalty','페널티 규정','환불 수수료'],guide:'해당 Fare Component의 변경·환불 및 Penalty 조건을 확인합니다.',source:'Amadeus 발권 자료'},
+  {gds:'Amadeus',title:'Sales Restriction',code:'FQN1-1//SR',desc:'판매/발권 제한 규정 확인',tags:'SR 발권 판매 제한 sales restriction',aliases:['발권 제한','판매 제한','sales restriction'],guide:'판매 지역, 발권 항공사 등 Sales Restriction 항목을 확인합니다.',source:'Amadeus 발권 자료'},
+  {gds:'Amadeus',title:'Flight Restriction',code:'FQN1-1//FL',desc:'적용 항공편/운항 제한 확인',tags:'FL flight 항공편 운항 제한',aliases:['항공편 제한','flight restriction','운항 제한'],guide:'운임 적용 항공편과 운항 제한 조건을 확인합니다.',source:'Amadeus 발권 자료'},
+  {gds:'Amadeus',title:'Combinability',code:'FQN1-1//CO',desc:'운임 결합 규정 확인',tags:'CO combinability 결합 조합',aliases:['운임 결합','combinability','조합 규정'],guide:'End-on-End, 왕복 결합 등 운임 조합 가능 여부를 확인합니다.',source:'Amadeus 발권 자료'}
 ];
 
 let state = loadState();
@@ -72,13 +72,63 @@ function renderDashboard(){
 }
 function renderTaskList(id,rows){ document.getElementById(id).innerHTML=rows.length?rows.map(t=>`<div class="task-row"><div class="task-time">${escapeHtml(t.time||'--:--')}</div><div><strong>${escapeHtml(t.client)}</strong><p>${escapeHtml(t.detail)}</p></div><span class="badge ${t.type==='TKT TL'?'warn':''}">${escapeHtml(t.type)}</span></div>`).join(''):'<div class="empty-state">오늘 마감 일정이 없습니다.</div>'; }
 
-function renderEntries(){
-  const q=(document.getElementById('entrySearch').value||'').toLowerCase(), g=document.getElementById('entryGds').value;
-  const rows=entryKB.filter(x=>(g==='all'||x.gds===g)&&`${x.title} ${x.code} ${x.desc} ${x.tags}`.toLowerCase().includes(q));
-  document.getElementById('entryResults').innerHTML=rows.map(x=>`<article class="entry-card"><div class="entry-meta"><span class="badge">${x.gds}</span><span>저장된 지식</span></div><h3>${escapeHtml(x.title)}</h3><div class="entry-code"><code>${escapeHtml(x.code)}</code><button data-copy="${escapeHtml(x.code)}">복사</button></div><p>${escapeHtml(x.desc)}</p></article>`).join('')||'<div class="empty-state">일치하는 엔트리가 없습니다.</div>';
+const entryStopWords=new Set(['엔트리','알려줘','알려주세요','찾아줘','찾아주세요','하는거','하는것','뭐야','뭔가요','어떻게','사용','명령어','코드']);
+function normalizeEntryQuestion(value=''){
+  return value.toLowerCase()
+    .replace(/과거\s*날짜/g,'과거일자').replace(/예전\s*날짜/g,'과거일자').replace(/옛날/g,'과거')
+    .replace(/조회하는\s*(거|것)/g,'조회').replace(/조회해\s*줘/g,'조회').replace(/검색/g,'조회')
+    .replace(/운임을/g,'운임').replace(/규정을/g,'규정').replace(/\s+/g,' ').trim();
 }
-document.getElementById('entrySearch').addEventListener('input',renderEntries); document.getElementById('entryGds').addEventListener('change',renderEntries);
+function entryTokens(value=''){
+  return normalizeEntryQuestion(value).split(/[^0-9a-z가-힣/*¥_-]+/i).filter(x=>x.length>1&&!entryStopWords.has(x));
+}
+function scoreEntry(entry,question){
+  const normalized=normalizeEntryQuestion(question), tokens=entryTokens(question);
+  const aliases=(entry.aliases||[]).map(normalizeEntryQuestion);
+  const hay=normalizeEntryQuestion(`${entry.title} ${entry.code} ${entry.desc} ${entry.tags} ${aliases.join(' ')}`);
+  let score=0;
+  aliases.forEach(a=>{ if(a&&normalized.includes(a)) score+=12; });
+  tokens.forEach(t=>{ if(hay.includes(t)) score+=t.length>=4?4:2; });
+  if(normalized.includes('과거')&&hay.includes('과거')) score+=8;
+  if(normalized.includes('운임')&&hay.includes('운임')) score+=3;
+  if(normalized.includes('규정')&&hay.includes('규정')) score+=3;
+  if(normalized.includes(entry.code.toLowerCase())) score+=20;
+  return score;
+}
+function entryCard(x){return `<article class="entry-card"><div class="entry-meta"><span class="badge">${x.gds}</span><span>${escapeHtml(x.source||'검증된 엔트리 DB')}</span></div><h3>${escapeHtml(x.title)}</h3><div class="entry-code"><code>${escapeHtml(x.code)}</code><button data-copy="${escapeHtml(x.code)}">복사</button></div><p>${escapeHtml(x.desc)}</p>${x.guide?`<p class="entry-guide">${escapeHtml(x.guide)}</p>`:''}</article>`;}
+function renderEntries(forceAnswer=false){
+  const input=document.getElementById('entrySearch'), g=document.getElementById('entryGds').value, q=input.value.trim();
+  const answer=document.getElementById('entryAnswer');
+  input.disabled=!g; document.getElementById('entryAskBtn').disabled=!g;
+  if(!g){
+    answer.classList.add('hidden');
+    document.getElementById('entryResults').innerHTML='<div class="empty-state">먼저 Sabre / Abacus 또는 Amadeus를 선택하세요.</div>';
+    return;
+  }
+  const candidates=entryKB.filter(x=>x.gds===g);
+  if(!q){
+    answer.classList.add('hidden');
+    document.getElementById('entryResults').innerHTML=candidates.map(entryCard).join('');
+    return;
+  }
+  const ranked=candidates.map(x=>({entry:x,score:scoreEntry(x,q)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  const rows=ranked.map(x=>x.entry);
+  document.getElementById('entryResults').innerHTML=rows.length?rows.slice(0,6).map(entryCard).join(''):'<div class="empty-state">선택한 GDS 자료에서 질문과 일치하는 검증 엔트리를 찾지 못했습니다. 추측해서 만들지 않고 자료 추가/확인을 기다립니다.</div>';
+  if(forceAnswer){
+    answer.classList.remove('hidden');
+    if(rows.length){
+      const best=rows[0];
+      answer.innerHTML=`<p class="eyebrow">질문 해석 · ${escapeHtml(g)}</p><h3>${escapeHtml(best.title)}</h3><p>“${escapeHtml(q)}” 질문과 가장 가까운 검증 엔트리입니다.</p><div class="answer-code"><code>${escapeHtml(best.code)}</code><button data-copy="${escapeHtml(best.code)}">복사</button></div><p>${escapeHtml(best.guide||best.desc)}</p><div class="entry-source">출처 구분: ${escapeHtml(best.source||'검증 엔트리 DB')}</div>`;
+    }else{
+      answer.innerHTML=`<p class="eyebrow">질문 해석 · ${escapeHtml(g)}</p><h3>검증된 엔트리를 찾지 못했습니다.</h3><p>현재 등록된 ${escapeHtml(g)} 자료에 해당 질문과 일치하는 엔트리가 없습니다. 정확도를 위해 임의 엔트리는 생성하지 않습니다.</p>`;
+    }
+  }
+}
+document.getElementById('entryGds').addEventListener('change',()=>{document.getElementById('entrySearch').value='';renderEntries(false);if(document.getElementById('entryGds').value)document.getElementById('entrySearch').focus();});
+document.getElementById('entryAskBtn').addEventListener('click',()=>renderEntries(true));
+document.getElementById('entrySearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();renderEntries(true);}});
 document.getElementById('entryResults').addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b){navigator.clipboard?.writeText(b.dataset.copy);toast('엔트리를 복사했습니다.')}});
+document.getElementById('entryAnswer').addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b){navigator.clipboard?.writeText(b.dataset.copy);toast('엔트리를 복사했습니다.')}});
 
 const pnrSample=`FQQ1\n01 DEMO/PASSENGER*\nLAST TKT DTE 25OCT26 - DATE OF ORIGIN\n------------------------------------------------------------\n     AL FLGT  BK   DATE  TIME  FARE BASIS      NVB  NVA   BG\n SEL\n OSA OZ  1145 C    25OCT 0755  CRT                  25OCT 2P\n SEL KE   726 J    29OCT 1810  JRT                  25OCT 2P\n\nKRW   944800\nKRW    65800-YR\nKRW    57300-XT\nKRW  1091900\nFARE FAMILY:FC2:2:PRFLEX\n\nFQN1-2//PE\nCANCELLATIONS\nANY TIME\nCANCELLATIONS PERMITTED FOR CANCEL/REFUND.\nCHANGES\nANY TIME\nCHANGES PERMITTED FOR REISSUE.`;
 document.getElementById('pnrSampleBtn').onclick=()=>{document.getElementById('pnrInput').value=pnrSample;};
