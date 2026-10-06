@@ -19,6 +19,8 @@ Primary workflow:
 - `dist/index.html` — application markup.
 - `dist/styles.css` — responsive UI and print styles.
 - `dist/app.js` — browser-side application logic and local storage.
+- `dist/workspace.js` / `dist/workspace.css` — task-first navigation, menu search, mobile actions and responsive presentation.
+- `.agents/skills/task-first-app-design/SKILL.md` — reusable cross-domain app/web UX skill and source observations.
 - `.openai/hosting.json` — OpenAI Sites hosting configuration.
 
 ## Development rules

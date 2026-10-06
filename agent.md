@@ -15,11 +15,14 @@ Use this project as a practical travel-agency operations assistant rather than a
 
 ## UX principles
 
+- Use `.agents/skills/task-first-app-design/SKILL.md` for task flows and responsive layout work. Its references distinguish observed SuperSOL patterns from proposed cross-domain adaptations.
+
 - Put today's deadlines and financial summary first on the dashboard.
 - Minimize the number of fields a staff member must type repeatedly.
 - Use travel-industry terminology where staff expect it, but explain ambiguous items in plain Korean.
 - Keep destructive actions obvious and reversible where possible.
 - Make print/PDF quotation output clean and customer-friendly.
+- Put uploads before extracted fields, preserve drafts across navigation, and forward contextual save actions to the existing validated form handler.
 
 ## GDS entry knowledge
 

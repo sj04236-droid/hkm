@@ -35,7 +35,7 @@ function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
   document.getElementById('pageTitle').textContent=titles[name]||name;
-  document.getElementById('sidebar').classList.remove('open'); window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sidebar').classList.remove('open'); window.scrollTo({top:0,behavior:'instant'});
   if(name==='quotes') renderQuotePreview();
 }
 document.addEventListener('click',e=>{ const go=e.target.closest('[data-go]'); if(go) showView(go.dataset.go); const nav=e.target.closest('[data-view]'); if(nav) showView(nav.dataset.view); });
@@ -44,7 +44,7 @@ document.getElementById('menuBtn').onclick=()=>document.getElementById('sidebar'
 function renderDashboard(){
   const openTasks=state.tasks.filter(t=>!t.done), today=openTasks.filter(t=>t.date===todayISO());
   const passportMissing=state.passportRecords.length;
-  document.getElementById('taskMetrics').innerHTML=[['오늘 마감',today.length,'TKT TL · 결제'],['견적 대기',state.quotes.length,'저장된 견적'],['여행객 여권',passportMissing,'일행별 등록'],['고객 CRM',state.customers.length,'등록 고객']].map(x=>`<div class="metric"><span class="label">${x[0]}</span><strong>${x[1]}건</strong><small>${x[2]}</small></div>`).join('');
+  document.getElementById('taskMetrics').innerHTML=[['오늘 마감',today.length,'TKT TL · 결제','tasks','일정 확인'],['저장된 견적',state.quotes.length,'고객 안내 내역','quotes','견적 작성'],['여행객 여권',passportMissing,'일행별 등록','passport','여권 업로드'],['고객 CRM',state.customers.length,'등록 고객','customers','고객 찾기']].map(x=>`<div class="metric"><span class="label">${x[0]}</span><strong>${x[1]}<small> 건</small></strong><small>${x[2]}</small><button class="metric-action" data-go="${x[3]}">${x[4]} →</button></div>`).join('');
   const month=todayISO().slice(0,7), rows=state.ledger.filter(x=>x.date.startsWith(month));
   const sales=rows.reduce((a,x)=>a+Number(x.sales||0),0), purchase=rows.reduce((a,x)=>a+Number(x.purchase||0),0), profit=rows.reduce((a,x)=>a+netProfit(x),0);
   document.getElementById('financeSummary').innerHTML=`<div class="finance-box"><span>매출액</span><strong>${won(sales)}</strong></div><div class="finance-box"><span>지출액</span><strong>${won(purchase)}</strong></div><div class="finance-box profit"><span>순수익</span><strong>${won(profit)}</strong></div>`;
@@ -52,7 +52,7 @@ function renderDashboard(){
   renderTaskList('todayTasks',today.slice(0,5));
   document.getElementById('recentLedger').innerHTML=state.ledger.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(x=>`<div class="compact-item"><div><strong>${escapeHtml(x.item)}</strong><small>${x.date} · ${escapeHtml(x.payment)}</small></div><div class="amount">${won(x.sales)}</div></div>`).join('')||'<div class="empty-state">거래가 없습니다.</div>';
 }
-function renderTaskList(id,rows){ document.getElementById(id).innerHTML=rows.length?rows.map(t=>`<div class="task-row"><div class="task-time">${escapeHtml(t.time||'--:--')}</div><div><strong>${escapeHtml(t.client)}</strong><p>${escapeHtml(t.detail)}</p></div><span class="badge ${t.type==='TKT TL'?'warn':''}">${escapeHtml(t.type)}</span></div>`).join(''):'<div class="empty-state">오늘 마감 일정이 없습니다.</div>'; }
+function renderTaskList(id,rows){ document.getElementById(id).innerHTML=rows.length?rows.map(t=>`<div class="task-row"><div class="task-time">${escapeHtml(t.time||'--:--')}</div><div><strong>${escapeHtml(t.client)}</strong><p>${escapeHtml(t.detail)}</p></div><div class="task-end"><span class="badge ${t.type==='TKT TL'?'warn':''}">${escapeHtml(t.type)}</span><button class="text-button" data-go="${t.type==='여권/APIS'?'passport':'tasks'}">업무 보기 →</button></div></div>`).join(''):'<div class="empty-state">오늘 마감 일정이 없습니다.</div>'; }
 
 function entryCard(x){return `<article class="entry-card"><div class="entry-meta"><span class="badge">${x.gds}</span><span>${escapeHtml((x.source||'검증된 엔트리 DB')+(x.page?' · '+x.page+'쪽':''))}</span></div><h3>${escapeHtml(x.title)}</h3><div class="entry-code"><code>${escapeHtml(x.code)}</code><button data-copy="${escapeHtml(x.code)}">복사</button></div><p>${escapeHtml(x.desc)}</p>${x.guide?`<p class="entry-guide">${escapeHtml(x.guide)}</p>`:''}</article>`;}
 function renderEntries(forceAnswer=false){
@@ -72,7 +72,7 @@ function renderEntries(forceAnswer=false){
   }
   const ranked=TravelCore.searchEntries(entryKB,g,q);
   const rows=ranked.map(x=>x.entry);
-  document.getElementById('entryResults').innerHTML=rows.length?rows.slice(0,6).map(entryCard).join(''):'<div class="empty-state">선택한 GDS 자료에서 질문과 일치하는 검증 엔트리를 찾지 못했습니다. 추측해서 만들지 않고 자료 추가/확인을 기다립니다.</div>';
+  document.getElementById('entryResults').innerHTML=rows.length?rows.slice(forceAnswer?1:0,forceAnswer?4:6).map(entryCard).join(''):'<div class="empty-state">선택한 GDS 자료에서 질문과 일치하는 검증 엔트리를 찾지 못했습니다. 추측해서 만들지 않고 자료 추가/확인을 기다립니다.</div>';
   if(forceAnswer){
     answer.classList.remove('hidden');
     if(rows.length){

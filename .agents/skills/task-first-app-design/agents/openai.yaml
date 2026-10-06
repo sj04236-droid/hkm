@@ -1,0 +1,4 @@
+interface:
+  display_name: "업무 동선 중심 앱 설계"
+  short_description: "모바일·웹의 탐색, 입력, 검토, 저장과 복귀 동선을 실제 업무에 맞게 설계합니다."
+  default_prompt: "Use $task-first-app-design to improve this app's layout and complete user flows while preserving its existing behavior."
