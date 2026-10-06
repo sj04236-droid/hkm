@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs'),vm=require('node:vm');
+const core=require('../dist/ops-core.js');
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(require.resolve('../dist/knowledge.js'),'utf8')+';globalThis.entries=manualEntries',ctx);
+assert.equal(core.searchEntries(ctx.entries,'Sabre/Abacus','과거일자 운임 조회하는거 엔트리 알려줘')[0].entry.code,'FQ15MAY21SELLAX25MAY21-UA');
+assert.equal(core.searchEntries(ctx.entries,'Amadeus','예전 날짜 운임 조회 알려줘')[0].entry.code,'FQDSELHKG/ACX/D10MAR18');
+assert.equal(core.searchEntries(ctx.entries,'Amadeus','존재하지않는업무 운임').length,0);
+const flights=core.parseFlights('2 KE 937 Y 23APR 7 ICNVIE HK1 1250 1710\n3 LH 215 Y 28APR 5 DRSFRA HK1 1520 1625\n4 OZ 542 Y 28APR 5 FRAICN HK1 1830 1315 +1');
+assert.equal(flights.length,3);assert.equal(flights[0].from,'ICN');assert.equal(flights[0].to,'VIE');assert.match(core.flightKorean(flights[2]),/아시아나항공.*프랑크푸르트.*인천.*\+1일/);
+assert.equal(core.parseFlights(' SEL\n OSA OZ 1145 C 25OCT 0755 CRT 25OCT 2P')[0].from,'SEL');
+const rules=core.summarizeRules('CANCELLATIONS\nBEFORE DEPARTURE\nCHARGE USD 100.00 FOR REFUND.\nAFTER DEPARTURE\nCANCELLATIONS NOT PERMITTED.\nCHANGES\nANY TIME\nCHANGES PERMITTED FOR REISSUE.\nCHARGE USD 50.00.\nNO-SHOW\nCHARGE USD 200.00.');
+const refund=rules.find(r=>r.title==='환불'),change=rules.find(r=>r.title==='변경');
+assert.match(refund.details.join(' '),/출발 전: 수수료 USD 100.00.*출발 후: 환불 불가/);assert.doesNotMatch(refund.source,/50\.00|200\.00/);assert.doesNotMatch(change.source,/100\.00|200\.00/);
+assert.equal(core.netProfit({sales:1500000,purchase:1280000,fee:25000,otherCost:5000}),220000);
+assert.equal(core.netProfit({sales:0,purchase:20000}),-20000);
+console.log('GDS isolation, unknown requests, multi-city PNR, rule boundaries and sales-minus-expenses tests passed.');

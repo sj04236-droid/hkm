@@ -30,7 +30,7 @@
       </nav>
 
       <div class="sidebar-note">
-        <strong>Private workspace</strong>
+        <strong>Travel workspace</strong>
         <span>업무용 MVP · 현재 데이터는 이 브라우저에 저장됩니다.</span>
       </div>
     </aside>
@@ -79,7 +79,7 @@
             <div class="card-head"><div><p class="eyebrow">빠른 실행</p><h3>자주 쓰는 업무</h3></div></div>
             <div class="quick-grid">
               <button class="quick-action" data-go="entries"><span>⌕</span><strong>엔트리 찾기</strong><small>Amadeus / Sabre·Abacus</small></button>
-              <button class="quick-action" data-go="pnr"><span>✦</span><strong>PNR 붙여넣기</strong><small>운임·규정 자동 요약</small></button>
+              <button class="quick-action" data-go="pnr"><span>✦</span><strong>PNR 붙여넣기</strong><small>운임·규정 한글 요약</small></button>
               <button class="quick-action" data-go="customers"><span>◎</span><strong>고객 등록</strong><small>회사·마일리지·연락처</small></button>
               <button class="quick-action" data-go="ledger"><span>₩</span><strong>거래 등록</strong><small>매출·매입·부가세</small></button>
             </div>
@@ -94,7 +94,7 @@
 
       <section class="view" id="view-entries">
         <div class="section-intro">
-          <div><p class="eyebrow">검증된 엔트리 지식베이스</p><h2>질문하듯 찾고 바로 복사하세요.</h2><p>검색 결과는 저장된 엔트리 자료를 기준으로 보여주며, 모르는 명령어를 임의로 만들지 않습니다.</p></div>
+          <div><p class="eyebrow">검증된 엔트리 지식베이스</p><h2>질문하듯 찾고 바로 복사하세요.</h2><p>GDS별 교재 서랍에서 질문에 맞는 엔트리·사용법·자료명·쪽수를 꺼내드립니다.</p></div>
         </div>
         <div class="toolbar card entry-toolbar">
           <select class="input entry-gds" id="entryGds" aria-label="GDS 선택">
@@ -106,7 +106,7 @@
           <button class="button primary" id="entryAskBtn" disabled>엔트리 찾기</button>
         </div>
         <div class="entry-answer hidden" id="entryAnswer" aria-live="polite"></div>
-        <div class="entry-grid" id="entryResults"></div>
+        <p id="entryCount" class="helper-text"></p><div class="entry-grid" id="entryResults"></div>
       </section>
 
       <section class="view" id="view-pnr">
@@ -115,7 +115,7 @@
           <article class="card">
             <label class="field-label" for="pnrInput">단말기 결과 붙여넣기</label>
             <textarea id="pnrInput" class="textarea code-area" rows="20" placeholder="FQQ1 또는 FQN 규정 내용을 여기에 붙여넣으세요."></textarea>
-            <div class="form-actions"><button class="button ghost" id="pnrSampleBtn">샘플 넣기</button><button class="button primary" id="analyzePnrBtn">AI형 자동 정리</button></div>
+            <div class="form-actions"><button class="button ghost" id="pnrSampleBtn">샘플 넣기</button><button class="button primary" id="analyzePnrBtn">규정 요약·정리</button></div>
           </article>
           <article class="card analysis-card">
             <div class="card-head"><div><p class="eyebrow">분석 결과</p><h3>고객 안내용 요약</h3></div><button class="text-button" id="copyAnalysisBtn">복사</button></div>
@@ -143,17 +143,17 @@
             <div class="form-actions span-2"><button type="button" class="button ghost" id="cancelCustomerBtn">취소</button><button class="button primary">저장</button></div>
           </form>
         </div>
-        <div class="customer-grid" id="customerList"></div>
+        <div class="toolbar card"><input id="customerSearch" class="input grow" placeholder="이름·영문명·회사·연락처·이메일·마일리지 찾기" aria-label="고객 검색"><select id="customerSort" class="input" aria-label="정렬"><option value="newest">최근 등록순</option><option value="name">이름순</option><option value="company">회사순</option></select><select id="customerDisplay" class="input" aria-label="보기 방식"><option value="cards">카드 보기</option><option value="list">목록 보기</option></select></div><p id="customerCount" class="helper-text"></p><div class="customer-grid" id="customerList"></div>
       </section>
 
       <section class="view" id="view-passport">
-        <div class="section-intro"><div><p class="eyebrow">Sensitive data</p><h2>여권 · APIS · 보험 정보를 고객별로 연결합니다.</h2><p>이 MVP에서는 입력 데이터와 작은 이미지 파일을 현재 브라우저에만 저장합니다. 실제 운영 전에는 서버 암호화·권한·보관기간 정책을 적용하세요.</p></div></div>
+        <div class="section-intro"><div><p class="eyebrow">여행객 여권 관리</p><h2>여권을 올리고 일행별로 저장하세요.</h2><p>CRM 고객 없이 여권을 올려 여행객을 등록할 수 있습니다. 일행은 여행건으로 묶고, 정보는 현재 브라우저에 저장합니다.</p></div></div>
         <div class="split-grid">
           <article class="card">
             <form id="passportForm" class="form-grid">
-              <label class="span-2">고객<select class="input" id="passportCustomer" required></select></label>
-              <label>여권 영문 성<input class="input" name="surname" /></label>
-              <label>여권 영문 이름<input class="input" name="givenName" /></label>
+              <label class="span-2">여행건 / 일행 이름<input class="input" name="party" placeholder="예: 10월 도쿄 출장 일행"></label><label class="span-2">CRM에서 불러오기 (선택)<select class="input" id="passportCustomer"><option value="">선택 없이 새 여행객 등록</option></select></label>
+              <label>여권 영문 성<input class="input" name="surname" required /></label>
+              <label>여권 영문 이름<input class="input" name="givenName" required /></label>
               <label>여권번호<input class="input" name="passportNo" /></label>
               <label>국적<input class="input" name="nationality" value="KOR" /></label>
               <label>성별<select class="input" name="gender"><option value="">선택</option><option>M</option><option>F</option></select></label>
@@ -162,11 +162,11 @@
               <label>발급국<input class="input" name="issueCountry" value="KOR" /></label>
               <label class="span-2">여행자보험용 정보 메모<textarea class="textarea" name="insuranceNote" rows="3" placeholder="보험 가입에 필요한 정보만 최소한으로 기록"></textarea></label>
               <label class="span-2 file-box">여권 파일 업로드<input type="file" id="passportFile" accept="image/*,.pdf" /><small>이미지 또는 PDF 첫 페이지의 여권 MRZ를 자동 인식해 성·이름·여권번호·국적·생년월일·성별·만료일·발급국을 채웁니다. 자동 입력 후 반드시 원본과 대조하세요.</small><span class="passport-ocr-status" id="passportOcrStatus" aria-live="polite">파일을 선택하면 자동으로 읽습니다.</span></label>
-              <div class="form-actions span-2"><button class="button primary">고객 여권정보 저장</button></div>
+              <div class="form-actions span-2"><button class="button primary">여행객 여권정보 저장</button></div>
             </form>
           </article>
           <article class="card">
-            <div class="card-head"><div><p class="eyebrow">저장 상태</p><h3>고객별 여권/APIS</h3></div></div>
+            <div class="card-head"><div><p class="eyebrow">저장 상태</p><h3>일행별 여권/APIS</h3></div></div>
             <div id="passportList" class="compact-list"></div>
           </article>
         </div>
@@ -177,15 +177,15 @@
         <div class="split-grid quote-layout">
           <article class="card">
             <form id="quoteForm" class="form-grid">
-              <label class="span-2">고객<select class="input" id="quoteCustomer"></select></label>
+              <label>수신 고객 / 회사<input class="input" id="quoteCustomer" placeholder="고객명 또는 회사 직접 입력"></label><label>탑승객<input class="input" name="passengers" placeholder="영문 탑승객명 / 일행"></label>
               <label class="span-2">견적 제목<input class="input" name="title" value="항공권 견적 안내" /></label>
-              <label class="span-2">여정 / 항공편<textarea class="textarea" name="itinerary" rows="5" placeholder="SEL–OSA OZ1145 C ..."></textarea></label>
-              <label>항공 운임<input class="input money-input" type="number" name="fare" value="0" /></label>
-              <label>세금 / 유류할증료<input class="input money-input" type="number" name="tax" value="0" /></label>
-              <label>서비스피<input class="input money-input" type="number" name="service" value="0" /></label>
-              <label>기타<input class="input money-input" type="number" name="other" value="0" /></label>
+              <label class="span-2">PNR 붙여넣기<textarea id="quotePnr" class="textarea code-area" rows="5" placeholder="2 KE 937 Y 23APR 7 ICNVIE HK1 1250 1710"></textarea></label><button type="button" class="button ghost span-2" id="quotePnrBtn">PNR을 한글 일정으로 정리</button><label class="span-2">한글 여정 / 항공편<textarea class="textarea" name="itinerary" rows="5" placeholder="PNR 입력 후 자동 정리 또는 직접 입력"></textarea></label>
+              <label>항공료 (세금 포함, 1인)<input class="input money-input" type="number" min="0" name="fare" value="0" /></label>
+              <label>인원<input class="input" type="number" name="quantity" min="1" value="1" /></label>
+              <label>TASF (수수료, 1인)<input class="input money-input" type="number" min="0" name="service" value="0" /></label>
+              <label>부대비용 (총액)<input class="input money-input" type="number" min="0" name="other" value="0" /></label>
               <label class="span-2">변경·환불·수하물 안내<textarea class="textarea" name="rules" rows="6"></textarea></label>
-              <div class="form-actions span-2"><button type="button" class="button ghost" id="saveQuoteBtn">견적 저장</button><button type="button" class="button primary" id="printQuoteBtn">인쇄 / PDF</button></div>
+              <label>결제 방법<select class="input" name="payment"><option>카드</option><option>계좌이체</option><option>현금</option></select></label><label>결제 안내<input class="input" name="paymentInfo" placeholder="계좌 / 결제기한 직접 입력"></label><details class="span-2"><summary>공급자 정보 입력</summary><div class="form-grid"><label>상호<input class="input" name="supplier" placeholder="여행사 이름"></label><label>발신 / 연락처<input class="input" name="supplierContact"></label><label>사업자등록번호<input class="input" name="businessNo"></label><label>주소<input class="input" name="supplierAddress"></label></div></details><div class="form-actions span-2"><button type="button" class="button ghost" id="saveQuoteBtn">견적 저장</button><button type="button" class="button primary" id="printQuoteBtn">인쇄 / PDF</button></div>
             </form>
           </article>
           <article class="card quote-preview" id="quotePreview"></article>
@@ -193,19 +193,19 @@
       </section>
 
       <section class="view" id="view-ledger">
-        <div class="section-intro"><div><p class="eyebrow">Sales & expense ledger</p><h2>거래일 기준으로 매출·매입·순수익을 관리합니다.</h2><p>현금·카드·계좌이체를 구분하고 공급가액·부가세액까지 같이 기록합니다.</p></div><button class="button primary" id="toggleLedgerForm">+ 거래 등록</button></div>
+        <div class="section-intro"><div><p class="eyebrow">Sales & expense ledger</p><h2>거래일 기준으로 매출·매입·순수익을 관리합니다.</h2><p>매출은 판매액, 매입은 증빙을 관리할 지출내역입니다. 순수익은 판매액 − 지출액으로 계산합니다. 지출 증빙의 세무 처리 여부는 별도로 확인하세요.</p></div><button class="button primary" id="toggleLedgerForm">+ 거래 등록</button></div>
         <div class="card hidden" id="ledgerFormCard">
           <form id="ledgerForm" class="form-grid ledger-form">
             <label>날짜<input class="input" type="date" name="date" required /></label>
-            <label>매출 항목<input class="input" name="item" required placeholder="항공권 / 호텔 / 서비스피" /></label>
+            <label>거래 항목<input class="input" name="item" required placeholder="항공권 / 호텔 / TASF" /></label>
             <label>거래번호<input class="input" name="tradeNo" placeholder="자동 생성" /></label>
             <label>고객/거래처<input class="input" name="client" /></label>
             <label>거래 종류<select class="input" name="payment"><option>현금</option><option>카드</option><option>계좌이체</option><option>기타</option></select></label>
             <label>부가세 유형<select class="input" name="vatType"><option value="taxable">과세 10%</option><option value="zero">면세/영세</option><option value="manual">직접 입력</option></select></label>
-            <label>매출액<input class="input" type="number" name="sales" value="0" /></label>
-            <label>매입액<input class="input" type="number" name="purchase" value="0" /></label>
-            <label>카드/외부 수수료<input class="input" type="number" name="fee" value="0" /></label>
-            <label>기타비용<input class="input" type="number" name="otherCost" value="0" /></label>
+            <label>매출 판매액<input class="input" type="number" name="sales" value="0" /></label>
+            <label>매입 지출액<input class="input" type="number" name="purchase" value="0" /></label>
+            <label>지출 항목<input class="input" name="expenseItem" placeholder="카드 수수료 / 임차료 / 교통비 등"></label>
+            <label>지출 증빙<select class="input" name="evidence"><option>미등록</option><option>세금계산서</option><option>현금영수증</option><option>카드전표</option><option>기타</option></select></label>
             <label>공급가액<input class="input" type="number" name="supply" value="0" /></label>
             <label>부가세액<input class="input" type="number" name="vat" value="0" /></label>
             <label class="span-2">메모<input class="input" name="memo" /></label>
@@ -218,7 +218,7 @@
         <article class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>날짜</th><th>거래번호</th><th>매출 항목</th><th>거래종류</th><th class="num">매출액</th><th class="num">매입액</th><th class="num">공급가액</th><th class="num">부가세액</th><th class="num">순수익</th><th></th></tr></thead>
+              <thead><tr><th>날짜</th><th>거래번호</th><th>매출 항목</th><th>거래종류</th><th class="num">판매액</th><th class="num">지출액</th><th>지출 항목</th><th>증빙</th><th class="num">공급가액</th><th class="num">부가세액</th><th class="num">순수익</th><th></th></tr></thead>
               <tbody id="ledgerBody"></tbody>
             </table>
           </div>
@@ -245,6 +245,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="./knowledge.js"></script>
+  <script src="./ops-core.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

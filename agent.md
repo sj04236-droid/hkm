@@ -38,8 +38,8 @@ Use this project as a practical travel-agency operations assistant rather than a
 ## Accounting behavior
 
 - Keep transaction date, sales item, payment type, sales amount, purchase amount, supply value, VAT, fees, other costs, and net profit distinguishable.
-- Current net-profit calculation is: `sales - purchase - fee - otherCost`.
-- VAT calculation rules must remain editable because travel-industry tax treatment can differ by transaction type.
+- Current net-profit calculation is: `sales - purchase`. Purchase means recorded expense; fees are not deducted a second time.
+- VAT calculation rules must remain editable because travel-industry tax treatment can differ by transaction type. Recording an expense does not establish tax deductibility.
 
 ## Change discipline
 
