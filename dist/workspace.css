@@ -33,3 +33,5 @@ body{font-size:14px}.app-shell{grid-template-columns:224px minmax(0,1fr)}
 @media print{.mobile-nav,.mobile-actions,.workspace-dialog,.question-chips,.flow-steps,#quotePreviewJump{display:none!important}.quote-preview{position:static;max-height:none;overflow:visible}.view#view-quotes{padding:0}.quote-sheet{padding:0!important}.form-section{display:none}}
 
 @media(max-width:820px){.analysis-card #analysisToQuoteBtn{position:static;bottom:auto}.sidebar{visibility:hidden}.sidebar.open{visibility:visible}}
+
+.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
