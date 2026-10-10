@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),vm=require('node:vm');
-const core=require('../dist/ops-core.js');
-const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(require.resolve('../dist/knowledge.js'),'utf8')+';globalThis.entries=manualEntries',ctx);
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(require.resolve('../public/ops-core.js'),'utf8'),ctx);const core=ctx.TravelCore;
+vm.runInContext(fs.readFileSync(require.resolve('../public/knowledge.js'),'utf8')+';globalThis.entries=manualEntries',ctx);
 assert.equal(core.searchEntries(ctx.entries,'Sabre/Abacus','과거일자 운임 조회하는거 엔트리 알려줘')[0].entry.code,'FQ15MAY21SELLAX25MAY21-UA');
 assert.equal(core.searchEntries(ctx.entries,'Amadeus','예전 날짜 운임 조회 알려줘')[0].entry.code,'FQDSELHKG/ACX/D10MAR18');
 assert.equal(core.searchEntries(ctx.entries,'Amadeus','존재하지않는업무 운임').length,0);

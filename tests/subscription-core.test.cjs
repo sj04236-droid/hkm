@@ -1,6 +1,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const SubscriptionCore=require('../dist/subscription-core.js');
+const fs=require('node:fs'),vm=require('node:vm');
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(require.resolve('../public/subscription-core.js'),'utf8'),ctx);const SubscriptionCore=ctx.SubscriptionCore;
 
 test('free trial allows exactly ten metered actions',()=>{
   let state=SubscriptionCore.normalize({});

@@ -46,6 +46,7 @@
           <h1 id="pageTitle">대시보드</h1>
         </div>
         <div class="top-actions">
+          <button class="account-chip" id="accountChip" type="button" data-open-subscription><span class="account-avatar">G</span><span><strong id="accountChipName">Google 로그인</strong><small id="accountChipEmail">회원별 무료 10회</small></span></button>
           <button class="trial-chip" id="trialChip" data-open-subscription aria-label="무료 사용량과 구독 확인"><span>무료 체험</span><strong id="trialChipCount">10회 남음</strong></button>
           <button class="button ghost" id="resetDemoBtn">데모 데이터 초기화</button>
           <button class="workspace-pill" id="workspacePill" data-go="workspace" aria-label="팀 및 구독 설정 열기"><span class="workspace-pill-mark">A</span><span><strong id="workspacePillName">내 여행사</strong><small id="workspacePillPlan">Pro 체험</small></span></button>
@@ -256,13 +257,13 @@
         <div class="workspace-grid">
           <article class="card plan-card">
             <div class="card-head"><div><p class="eyebrow">현재 플랜</p><h3 id="planName">무료 체험</h3></div><span class="badge ok" id="subscriptionStatusBadge">체험 중</span></div>
-            <p class="plan-copy">현재 공개 시험에서는 브라우저 기준으로 핵심 자동화 10회를 무료로 사용합니다. 정식 런칭에서는 로그인한 회원 계정 기준으로 전환합니다. CRM 조회, 장부 열람과 저장된 자료 확인은 차감하지 않습니다.</p>
+            <p class="plan-copy">Google로 로그인한 회원 계정마다 핵심 자동화 10회를 무료로 제공합니다. CRM 조회, 장부 열람과 저장된 자료 확인은 차감하지 않습니다.</p>
             <div class="trial-progress" aria-labelledby="trialProgressLabel"><div><span id="trialProgressLabel">무료 자동화 사용량</span><strong id="trialProgressValue">0 / 10회</strong></div><div class="trial-progress-track"><span id="trialProgressBar"></span></div><small id="trialRemainingText">10회 남았습니다.</small></div>
             <div class="usage-grid" id="workspaceUsage"></div>
             <div class="status-row"><span>월 이용료</span><strong>9,900원 / VAT 포함</strong></div>
             <div class="status-row"><span>자동결제</span><strong id="billingConnectionLabel">Toss Payments 연결 준비</strong></div>
             <button class="button primary full" type="button" data-open-subscription>무료 사용량·결제 관리</button>
-            <p class="helper-text">현재 공개 시험 버전의 사용량은 이 브라우저에 저장됩니다. 정식 결제 전에는 실제 요금이 청구되지 않습니다.</p>
+            <p class="helper-text">사용량과 구독 상태는 회원 계정에 저장됩니다. 카드 등록을 완료하면 첫 달 9,900원이 결제되고 매월 같은 날 자동 갱신됩니다.</p>
           </article>
 
           <article class="card setup-card">
@@ -297,13 +298,17 @@
     <div class="subscription-summary"><div><span>현재 상태</span><strong id="subscriptionDialogStatus">무료 체험</strong></div><div><span>남은 자동화</span><strong id="subscriptionDialogRemaining">10회</strong></div></div>
     <div class="pricing-card"><div><p class="eyebrow">PRO MONTHLY</p><h3>월 9,900원 <small>VAT 포함</small></h3><p>여행사 실무자가 매일 사용하는 자동화 기능을 한 업무공간에서 제공합니다.</p></div><ul><li>Amadeus · Sabre/Abacus 엔트리 도우미</li><li>PNR·운임규정 한글 정리</li><li>여권 MRZ 인식과 APIS 입력</li><li>견적서·CRM·매출/매입 장부</li></ul></div>
     <div class="billing-steps"><span><b>1</b>무료 10회 사용</span><span><b>2</b>카드 등록</span><span><b>3</b>매월 자동결제</span></div>
-    <div class="billing-notice" id="billingNotice"><strong>결제 연동 준비 단계</strong><p>Toss Payments 자동결제 계약과 상점 키가 연결된 뒤 카드 등록 버튼이 활성화됩니다. 연결 전에는 결제가 발생하지 않습니다.</p></div>
-    <button class="button primary full" id="startSubscriptionBtn" type="button">Toss Payments 결제수단 등록 준비</button>
+    <div class="login-panel" id="loginPanel"><strong>먼저 Google로 로그인하세요</strong><p>무료 사용량과 결제 상태를 안전하게 회원 계정에 저장합니다.</p><div id="googleSignInButton"></div></div>
+    <div class="member-panel hidden" id="memberPanel"><div><strong id="memberName"></strong><p id="memberEmail"></p></div><button class="text-button" id="logoutBtn" type="button">로그아웃</button></div>
+    <div class="billing-notice" id="billingNotice"><strong>무료 10회부터 시작합니다</strong><p>무료 사용이 끝난 뒤 카드를 등록하면 월 9,900원(VAT 포함)으로 Pro 기능을 계속 이용합니다.</p></div>
+    <button class="button primary full" id="startSubscriptionBtn" type="button">Toss Payments 카드 등록</button>
     <button class="text-button dialog-close-link" id="continueTrialBtn" type="button">남은 무료 사용 계속하기</button>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="https://js.tosspayments.com/v2/standard"></script>
   <script src="./knowledge.js"></script>
   <script src="./ops-core.js"></script>
   <script src="./subscription-core.js"></script>

@@ -1,32 +1,35 @@
 # ATR Travel Ops
 
-여행사 업무를 위한 브라우저 기반 웹 앱입니다.
+여행사 실무자를 위한 GDS 엔트리, PNR·운임규정 분석, CRM, 여권·APIS, 견적서, 매출·매입 장부 자동화 서비스입니다.
 
-- GDS 선택 후 교재 기반 엔트리 검색: 엔트리, 설명, 자료명과 쪽수 표시
-- PNR 및 운임 규정 붙여넣기: 한글 항공 일정, 변경·환불·노쇼 조건, 수수료 및 원문 근거
-- CRM: 고객 검색, 이름/회사/등록순 정렬, 카드/목록 보기 및 수정
-- 여권/APIS: 고객 선택 없이 여행객 등록, 여행건으로 일행 구분, 이미지/PDF MRZ 자동입력
-- 견적: 고객 수동입력, PNR 한글 일정, 항공료(세금 포함), TASF, 인원, 부대비용, 공급자 및 결제 정보
-- 장부: 판매액과 지출액을 구분하며 순수익 = 판매액 − 지출액. 지출 항목과 증빙 관리
+## 구독 구조
 
-## 실행 및 확인
+- Google 간편 로그인 회원마다 핵심 자동화 10회 무료
+- Pro 월 9,900원(VAT 포함)
+- Toss Payments 자동결제 카드 등록 후 첫 달 결제
+- 다음 결제일 기준 월 갱신 API 제공
+- 여권·고객 데이터와 결제 비밀키는 브라우저 번들에 넣지 않음
 
-`dist` 폴더를 정적 HTTP 서버로 제공하면 됩니다. 별도 빌드 단계는 없습니다.
+## 서버 환경변수
 
-```text
-node --check dist/app.js
-node --check dist/ops-core.js
-node tests/ops-core.test.cjs
+`.env.example`에는 키 이름만 있습니다. 실제 값은 Sites 런타임 환경변수에 등록하고 GitHub에 커밋하지 않습니다.
+
+- `GOOGLE_CLIENT_ID`: Google Identity Services 웹 클라이언트 ID
+- `TOSS_CLIENT_KEY`: 자동결제(빌링) 계약 상점의 클라이언트 키
+- `TOSS_SECRET_KEY`: Toss 서버 API 시크릿 키
+- `SESSION_SECRET`: 로그인 세션 서명용 긴 임의 문자열
+- `BILLING_ENCRYPTION_KEY`: 빌링키 암호화용 32바이트 키의 Base64 값
+- `RENEWAL_SECRET`: 월 갱신 API 호출용 긴 임의 문자열
+
+Google Cloud의 승인된 JavaScript 원본에는 `https://ops.lineuplounge.co.kr`을 등록합니다. Toss의 클라이언트 키와 시크릿 키는 같은 MID와 같은 테스트/라이브 환경의 키를 사용해야 합니다.
+
+## 개발 및 검증
+
+```bash
+npm ci
+npm run db:generate
+npm run build
+node --test tests/ops-core.test.cjs tests/subscription-core.test.cjs
 ```
 
-## 자료 범위
-
-`dist/knowledge.js`에는 네 교재에서 확인한 명령 형식 177개가 있습니다. 자료명과 쪽수는 각 레코드에 기록되어 있습니다. Sabre 예약 교재의 쪽수는 PDF 페이지 순서이며, Amadeus의 쪽수는 교재에 인쇄된 쪽수입니다. 교재의 모든 명령과 예외를 완전히 수록한 것은 아닙니다. 검색에 없는 내용은 생성하지 않습니다. 과거일자 예시는 명령 형식 설명용이며 실제 날짜로 대체해야 합니다.
-
-규정 요약은 제공된 텍스트의 항목·조건·수수료를 추출하는 방식입니다. 원문 전체가 제공되지 않으면 누락된 조건을 추정하지 않습니다. 지원 형식 밖 PNR은 한글 일정란에서 수정할 수 있습니다.
-
-여권 OCR은 브라우저에서 실행됩니다. 인식이 불확실한 이름 형식은 비워 두고 직접 입력하도록 안내합니다. 이미지/PDF 원본은 서버에 업로드하거나 저장하지 않습니다. 사용자 기록은 현재 브라우저의 localStorage에 저장됩니다. 여러 기기 공유 DB와 계정별 권한은 구현되어 있지 않습니다.
-
-견적 레이아웃은 제공된 나리타 항공권 및 비엔나·드레스덴 다구간 Excel 예시의 일정/단가/인원/합계 구조를 참고했습니다. 실제 고객명, 연락처, 계좌번호 및 견적금액은 소스에 포함하지 않았습니다.
-
-Sites 게시와 GitHub push는 별도 작업입니다. GitHub에 올리는 것만으로 현재 Sites 화면이 자동 갱신되는 것은 아닙니다.
+Sites 배포 시 `.openai/hosting.json`의 `DB` 바인딩으로 D1이 연결되고 `drizzle/` 마이그레이션이 적용됩니다.
