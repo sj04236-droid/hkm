@@ -1,48 +1,48 @@
 ---
 name: task-first-app-design
-description: Design or improve mobile apps, responsive web apps and operational dashboards using task-first navigation, contextual actions, search, reviewable forms and clear return paths. Use for user-flow and layout work across industries; do not use for visual-only artwork or static promotional pages.
+description: 사용자의 주요 업무를 중심으로 모바일 앱, 반응형 웹앱, 운영 대시보드의 탐색·입력·검토·저장·복귀 동선을 설계하거나 개선합니다. 여러 업종의 사용자 흐름과 레이아웃 작업에 사용하며, 시각 작품이나 정적 홍보 페이지만 만드는 작업에는 사용하지 않습니다.
 ---
 
-# Task-first app design
+# 업무 중심 앱 설계
 
-Create a working interface that helps people understand their current state, choose the next action, complete it and return without losing context. Apply patterns observed in the Shinhan SuperSOL Android app, adapted to the user's domain and existing product. Do not copy its branding or assume all products need a banking layout.
+사용자가 현재 상태를 이해하고, 다음 행동을 선택하고, 업무를 완료한 뒤 맥락을 잃지 않고 돌아갈 수 있는 실제 작동 화면을 만듭니다. 신한 슈퍼SOL 안드로이드 앱에서 관찰한 패턴을 사용자의 업종과 기존 제품에 맞게 적용합니다. 슈퍼SOL의 브랜드를 복제하거나 모든 제품을 금융 앱처럼 구성하지 않습니다.
 
-## Start from the user's task
+## 사용자의 업무에서 시작하기
 
-Identify the primary user, object being managed, frequent task, completion condition and interruption risks. Preserve existing authorization, calculations, data models and working features unless the requested change requires modifying them. Infer routine choices from the project and conversation; ask only about materially different outcomes.
+주요 사용자, 관리 대상, 자주 하는 업무, 완료 조건, 중단 위험을 먼저 파악합니다. 요청된 변경에 꼭 필요한 경우가 아니라면 기존 권한, 계산식, 데이터 모델, 정상 작동 기능을 유지합니다. 일상적인 구현 선택은 프로젝트와 대화 맥락에서 판단하고, 결과가 크게 달라지는 선택만 질문합니다.
 
-For redesigns, inspect the current screens and code before changing them. Distinguish observed behavior, published descriptions and proposed design. Do not claim to have tested screens beyond login, authentication or other gates that were not crossed. Read [observed basis](references/observed-basis.md) when explaining the source patterns.
+재설계할 때는 변경 전에 현재 화면과 코드를 확인합니다. 직접 관찰한 동작, 공개된 설명, 새로 제안하는 설계를 구분합니다. 로그인·인증 등 통과하지 못한 단계 너머의 화면을 테스트했다고 말하지 않습니다. 참고 패턴의 근거를 설명할 때는 [관찰 근거와 한계](references/observed-basis.md)를 읽습니다.
 
-## Map the complete task
+## 전체 업무 흐름 설계하기
 
-Write a compact flow for entry → selection/search → detail/input → review → save/submit → confirmation → return. Include empty, loading, partial, error, permission-needed and success states where relevant. Map the main object identifier through the flow so the correct record remains selected. Never add a feature solely to make the flow resemble a reference app.
+진입 → 선택/검색 → 상세/입력 → 검토 → 저장/제출 → 완료 확인 → 복귀 흐름을 간결하게 설계합니다. 필요에 따라 빈 상태, 로딩, 일부 완료, 오류, 권한 필요, 성공 상태를 포함합니다. 전체 과정에서 주요 대상의 식별자를 유지해 사용자가 같은 건을 계속 처리하도록 합니다. 참고 앱과 비슷하게 보이기 위한 기능은 추가하지 않습니다.
 
-Specify what persists when the user goes back: input values, selected category, query, filter, scroll position and record identity. Do not silently clear drafts or choose a different record. Use an existing suitable mechanism; server sessions, URL state and local storage have different privacy and persistence implications.
+사용자가 뒤로 갔을 때 유지할 항목을 정합니다. 입력값, 선택한 분류, 검색어, 필터, 스크롤 위치, 대상 레코드가 여기에 포함됩니다. 작성 중인 내용을 조용히 지우거나 다른 레코드를 선택하지 않습니다. 서버 세션, URL 상태, 로컬 저장소는 개인정보 보호와 지속 범위가 다르므로 제품에 맞는 기존 방식을 사용합니다.
 
-## Select layout around intent
+## 목적에 맞는 화면 구성 선택하기
 
-- Overview: show actionable status and the user's most important numbers first. Put a relevant action beside each status. Avoid an introductory hero before the work.
-- Browse: combine categories, search and concise lists when each adds value. Indicate the selected category clearly. Keep late categories discoverable.
-- Detail: summarize the object, show evidence or supporting information progressively and keep the primary action visible. Preserve a clear return path.
-- Input: place upload/import first when it supplies the fields. Follow with editable results, validation, review and explicit save. Manual entry must remain possible.
-- Assistant: offer relevant example questions, respond with a short useful result, show sources when factual accuracy requires them and place the next action close to the answer. Do not hide the action under a long explanation.
+- 개요: 실행 가능한 상태와 가장 중요한 수치를 먼저 보여줍니다. 각 상태 옆에 관련 행동을 둡니다. 실제 업무보다 소개용 배너가 먼저 나오지 않게 합니다.
+- 탐색: 분류, 검색, 간결한 목록이 각각 도움이 될 때 함께 사용합니다. 선택된 분류를 명확히 표시하고 뒤쪽 분류도 찾을 수 있게 합니다.
+- 상세: 대상을 요약하고 근거나 부가 정보를 단계적으로 보여주며 주요 행동을 계속 찾기 쉽게 둡니다. 명확한 복귀 경로를 유지합니다.
+- 입력: 파일 업로드나 가져오기가 입력을 채워 준다면 가장 먼저 둡니다. 이어서 수정 가능한 인식 결과, 유효성 검사, 검토, 명시적 저장 순서로 구성합니다. 직접 입력 방식도 유지합니다.
+- 도우미: 실제 지원하는 예시 질문을 제시하고, 짧고 유용한 답을 먼저 보여줍니다. 정확성에 근거가 필요하면 출처를 표시하고 다음 행동을 답변 가까이에 둡니다. 긴 설명 아래에 행동을 숨기지 않습니다.
 
-For density, breakpoints, keyboard access and form behavior read [layout and interaction rules](references/layout-and-interaction.md). These are starting points, not a mandatory component inventory.
+정보 밀도, 반응형 기준점, 키보드 접근성, 폼 동작을 정할 때는 [레이아웃과 상호작용 규칙](references/layout-and-interaction.md)을 읽습니다. 이 규칙은 시작 기준이며 고정된 구성요소 목록이 아닙니다.
 
-## Adapt across platforms and domains
+## 플랫폼과 업종에 맞게 적용하기
 
-Use bottom navigation for a small stable set of frequent mobile destinations; desktop can use a sidebar. Treat “all tasks” as a searchable overflow when justified. An occasional detail flow may replace global navigation with back and a primary action. Avoid two conflicting navigation systems.
+모바일에서는 자주 쓰는 소수의 안정적인 목적지만 하단 메뉴에 둡니다. 데스크톱에서는 사이드바를 사용할 수 있습니다. 필요한 경우 전체 업무를 검색 가능한 더보기 영역으로 제공합니다. 가끔 사용하는 상세 흐름에서는 전역 메뉴 대신 뒤로 가기와 주요 행동을 보여줄 수 있습니다. 서로 충돌하는 두 개의 탐색 체계를 만들지 않습니다.
 
-Use semantic patterns rather than banking nouns: account → managed object, balance → key metric, transfer → contextual action, product → selectable offering, claim → evidence submission. In medical, legal, financial or identity workflows, obtain the appropriate human decisions and confirmations; UI pattern reuse does not authorize consequential actions.
+금융 용어 대신 의미 구조를 옮깁니다. 계좌 → 관리 대상, 잔액 → 핵심 지표, 이체 → 맥락에 맞는 행동, 상품 → 선택 가능한 서비스, 청구 → 증빙 제출처럼 적용합니다. 의료·법률·금융·신원 정보 흐름에서는 필요한 사람의 판단과 확인을 받습니다. 화면 패턴을 재사용했다고 해서 중요한 결과를 만드는 행동까지 자동으로 허용되는 것은 아닙니다.
 
-Do not enable automatic personalization by default. Let users pin frequent tasks when useful and keep essential controls stable. Do not add animation, characters, promotional banners or gamification without a product reason.
+자동 개인화를 기본으로 켜지 않습니다. 도움이 된다면 사용자가 자주 쓰는 업무를 고정하게 하고 필수 조작 위치는 안정적으로 유지합니다. 제품 목적이 없다면 애니메이션, 캐릭터, 홍보 배너, 게임 요소를 추가하지 않습니다.
 
-## Implement and verify
+## 구현하고 검증하기
 
-Use the project's existing framework and design system. Preserve native labels, field validation and disabled states. Add loading and error feedback to real asynchronous work; never simulate a successful backend action. Integrate primary buttons with the existing save/submit logic rather than maintaining two implementations.
+프로젝트의 기존 프레임워크와 디자인 시스템을 사용합니다. 기본 라벨, 필드 유효성 검사, 비활성 상태를 유지합니다. 실제 비동기 작업에는 로딩과 오류 피드백을 제공하며, 서버 동작이 없는데 성공한 것처럼 표시하지 않습니다. 주요 버튼은 기존 저장·제출 로직을 호출하게 하여 같은 기능을 두 벌로 만들지 않습니다.
 
-Verify at least one meaningful primary flow and its return path. Check a narrow mobile view and a desktop view: no clipped controls, hidden required fields, overlapping navigation or sticky actions, lost drafts, duplicate IDs or broken print output. Use appropriate existing tests for logic regressions; do not create tests that only assert headings or CSS class names. Report what was actually changed and tested, remaining limits and verified artifact URLs.
+의미 있는 주요 흐름 하나 이상과 완료 후 복귀를 검증합니다. 좁은 모바일 화면과 데스크톱 화면에서 잘린 조작 요소, 숨은 필수 항목, 하단 메뉴와 고정 버튼의 겹침, 사라진 작성 내용, 중복 ID, 깨진 인쇄 결과가 없는지 확인합니다. 로직 회귀에는 기존의 적절한 테스트를 사용하고 제목이나 CSS 클래스만 확인하는 테스트는 만들지 않습니다. 실제로 바꾸고 확인한 내용, 남은 한계, 검증된 결과물 URL을 보고합니다.
 
-## Deliverables
+## 결과물
 
-When asked for analysis, provide observed screens, a task-flow diagram, friction points and prioritized changes. When asked to implement, finish the interface and validation, and follow the user's requested repository and publishing workflow. Never put private screenshots, account balances, customer records, device identifiers or credentials into a public repository.
+분석을 요청받으면 관찰한 화면, 업무 흐름도, 불편 지점, 우선순위 개선안을 제공합니다. 구현을 요청받으면 화면과 검증을 완료하고 사용자가 요청한 저장소 및 게시 절차를 따릅니다. 비공개 화면 캡처, 계좌 잔액, 고객 기록, 기기 식별자, 인증정보를 공개 저장소에 넣지 않습니다.

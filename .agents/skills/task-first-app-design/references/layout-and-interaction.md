@@ -1,41 +1,41 @@
-# Layout and interaction rules
+# 레이아웃과 상호작용 규칙
 
-## Navigation and responsive layout
+## 탐색과 반응형 레이아웃
 
-Choose breakpoints when content stops fitting, not by device brand. Start with one content column on narrow screens; use list/detail or input/preview columns when both remain readable. For a mobile app, respect platform back gestures and safe areas. For web, keep browser navigation and meaningful links functional.
+기기 종류가 아니라 콘텐츠가 더 이상 제대로 들어가지 않는 지점에서 반응형 기준점을 정합니다. 좁은 화면에서는 한 열로 시작하고, 목록/상세 또는 입력/미리보기가 모두 읽기 쉬울 때만 두 열을 사용합니다. 모바일 앱에서는 운영체제의 뒤로 가기 동작과 안전 영역을 고려합니다. 웹에서는 브라우저 탐색과 의미 있는 링크가 정상 작동하게 합니다.
 
-Use a small stable set of bottom destinations only for frequently used areas. A sidebar works well for wider operational tools. Distinguish global destinations, local tabs and primary action. Preserve active state using text plus a visual cue; do not rely on color alone.
+모바일 하단 메뉴에는 자주 쓰는 소수의 안정적인 목적지만 둡니다. 넓은 업무 화면에는 사이드바가 적합합니다. 전역 목적지, 화면 안의 탭, 주요 행동을 구분합니다. 선택 상태는 색상에만 의존하지 않고 텍스트와 시각적 표시를 함께 사용합니다.
 
-Keep sticky controls out of the keyboard, bottom navigation and safe area. Reserve space at the bottom so the final field remains reachable. Ensure that floating feedback does not cover submit controls. Avoid a sticky preview if its scroll area becomes unusably small; collapse to a normal document on narrow screens. Disable workspace chrome for print/export.
+고정 조작 요소가 키보드, 하단 메뉴, 안전 영역과 겹치지 않게 합니다. 마지막 필드까지 닿을 수 있도록 화면 하단에 충분한 여백을 둡니다. 떠 있는 알림이 제출 버튼을 가리지 않게 합니다. 고정 미리보기의 스크롤 영역이 지나치게 작아지면 좁은 화면에서는 일반 문서 흐름으로 바꿉니다. 인쇄·내보내기에서는 업무용 탐색 UI를 숨깁니다.
 
-## Information hierarchy
+## 정보 위계
 
-Use a short page title, critical state, working controls and useful content before optional recommendations. Cards group information; they are not mandatory wrappers for every row. In dense tools, prefer compact rows and a separate detail panel. Use numerals aligned for comparison. Never change the meaning of revenue, cost, profit or other domain metrics to fit a visual.
+짧은 페이지 제목, 중요한 상태, 실제 조작 요소, 유용한 콘텐츠를 선택적 추천보다 먼저 배치합니다. 카드는 정보를 묶는 수단이며 모든 행을 반드시 카드로 감쌀 필요는 없습니다. 정보가 많은 업무 도구에서는 간결한 행과 별도 상세 패널을 우선합니다. 비교할 수치는 정렬합니다. 시각 디자인에 맞추기 위해 매출, 원가, 순수익 등 업무 지표의 의미를 바꾸지 않습니다.
 
-Use a neutral background and subtle surface separation. Reserve accent color for selected state and primary actions. Body text around 14–16 CSS pixels and controls around 44–48 pixels are useful web starting points; verify legibility and touch use rather than treating these as exact source measurements. Check WCAG AA contrast, keyboard focus, zoom/reflow and platform text scaling. Important errors and statuses require words, not color alone.
+중립적인 배경과 은은한 표면 구분을 사용합니다. 강조색은 선택 상태와 주요 행동에 집중합니다. 본문 14~16 CSS 픽셀, 조작 요소 높이 44~48픽셀은 웹의 시작 기준으로 사용할 수 있지만, 원본 앱의 정확한 측정값처럼 취급하지 말고 가독성과 터치 편의성을 직접 확인합니다. WCAG AA 대비, 키보드 포커스, 확대·재배치, 운영체제 글자 크기를 확인합니다. 중요한 오류와 상태는 색상뿐 아니라 문구로도 전달합니다.
 
-## Forms and import review
+## 폼과 가져오기 결과 검토
 
-Place the fastest valid entry path first. Group related fields with visible section labels and an understandable order. Do not hide a required field behind a collapsed section. Explain errors beside fields. Preserve values on failure. Keep save actions disabled only while relevant work is actually running.
+가장 빠르면서 유효한 입력 경로를 먼저 배치합니다. 관련 필드는 눈에 보이는 구역 제목 아래 이해하기 쉬운 순서로 묶습니다. 필수 필드를 접힌 영역에 숨기지 않습니다. 오류는 해당 필드 가까이에서 설명하고 실패 시 입력값을 유지합니다. 관련 작업이 실제로 진행 중일 때만 저장 버튼을 비활성화합니다.
 
-An import flow must distinguish reading, partial result, failed recognition and confirmed save. Display the original or its available reference next to editable extracted fields when practical. Require review for identity or financial information. Uploaded companions are independent records unless the domain explicitly requires linking; do not infer person identity from similar names.
+가져오기 흐름은 읽는 중, 일부 인식, 인식 실패, 저장 확인 상태를 구분해야 합니다. 가능하다면 원본 또는 원본을 확인할 수 있는 자료를 수정 가능한 추출 필드 옆에 표시합니다. 신원·재무 정보는 저장 전에 검토를 요구합니다. 함께 업로드된 사람들은 업무상 연결이 명시된 경우가 아니면 독립된 기록으로 다룹니다. 이름이 비슷하다는 이유로 같은 사람이라고 추정하지 않습니다.
 
-When adding a second visible save control, forward it to the existing form handler and native validation. Test both controls. Never send sensitive records to a third party for analysis without the required authorization. Use fictional fixtures for screenshots and repository tests.
+두 번째 저장 버튼을 화면에 추가할 때는 기존 폼 처리기와 기본 유효성 검사를 호출하게 합니다. 두 버튼을 모두 테스트합니다. 필요한 허가 없이 민감한 기록을 외부 서비스로 보내 분석하지 않습니다. 화면 캡처와 저장소 테스트에는 가상 데이터를 사용합니다.
 
-## Search and assistants
+## 검색과 도우미
 
-State what search covers. Menu search, record search and factual Q&A are different scopes and must be labeled accurately. Show a helpful no-match state and preserve the query. Suggestions should represent known supported tasks; a suggestion is not evidence that an answer exists.
+검색 범위를 명확히 알립니다. 메뉴 검색, 레코드 검색, 사실 질의응답은 서로 다른 기능입니다. 일치 결과가 없을 때 유용한 안내를 보여주고 검색어는 유지합니다. 추천 질문은 실제로 지원하는 업무를 나타내야 하며, 추천 문구가 있다는 사실 자체가 답변 존재의 근거는 아닙니다.
 
-For reference answers, show the useful result first, then concise explanation, example and provenance. Put copy or the next allowed task near the result. Deduplicate the primary answer from related results. Distinguish supported facts from inferred matches; show uncertainty instead of fabricating commands or rules.
+참고 자료를 답할 때는 유용한 결과를 먼저 보여준 뒤 간결한 설명, 예시, 출처를 제공합니다. 복사 또는 다음 허용 행동을 결과 가까이에 둡니다. 첫 답변과 관련 결과에서 같은 항목을 중복 표시하지 않습니다. 자료로 확인된 사실과 추론으로 매칭한 결과를 구분하고, 명령어나 규정을 만들어내는 대신 불확실성을 표시합니다.
 
-## Verification scenarios
+## 검증 시나리오
 
-- First visit with no records: meaningful starting action, no false count or fake pending status.
-- Existing records: correct object and filters survive detail/return.
-- Narrow viewport and zoom: controls remain reachable and tables scroll within their container.
-- Keyboard: every interactive control has a label and visible focus; dialogs trap focus and close with Escape.
-- Import fails or partly succeeds: clear feedback, editable values and retry/manual path.
-- Save fails: preserve draft and avoid success feedback.
-- Desktop preview and print: no clipped document, toolbars or fixed controls in exported content.
+- 첫 방문·기록 없음: 의미 있는 시작 행동이 있고, 거짓 건수나 가짜 대기 상태가 없어야 합니다.
+- 기존 기록 있음: 상세 화면을 열고 돌아와도 올바른 대상과 필터가 유지되어야 합니다.
+- 좁은 화면·확대: 조작 요소에 접근할 수 있고 표는 컨테이너 안에서 스크롤되어야 합니다.
+- 키보드: 모든 조작 요소에 라벨과 보이는 포커스가 있고, 대화상자에서 포커스가 관리되며 Escape로 닫혀야 합니다.
+- 가져오기 실패·일부 성공: 상태를 명확히 알리고, 인식된 값은 수정할 수 있으며 재시도 또는 직접 입력 경로가 있어야 합니다.
+- 저장 실패: 작성 내용을 유지하고 성공 메시지를 표시하지 않아야 합니다.
+- 데스크톱 미리보기·인쇄: 문서, 도구 모음, 고정 요소가 잘리거나 인쇄물에 섞이지 않아야 합니다.
 
-Choose scenarios relevant to the actual change. Explain unsupported flows rather than presenting mock behavior as verified.
+실제 변경과 관련된 시나리오를 선택합니다. 지원하지 않는 흐름은 검증된 것처럼 보여주지 말고 한계를 설명합니다.

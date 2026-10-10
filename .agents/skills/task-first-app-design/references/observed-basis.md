@@ -1,39 +1,37 @@
-# Observed basis and limits
+# 관찰 근거와 한계
 
-Date: 2026-10-06. Reference: Shinhan SuperSOL on a physical Samsung Android 12 device. Screens were examined through a local Mobile MCP connection. The observed user interface used a dark theme. Do not infer light-theme measurements or universal availability from this session.
+관찰일: 2026-10-06. 참고 앱: 삼성 안드로이드 12 실기기에서 실행한 신한 슈퍼SOL. 화면은 로컬 Mobile MCP 연결을 통해 확인했습니다. 관찰 당시 앱은 다크 테마였습니다. 이 관찰로 라이트 테마의 수치나 모든 사용자에게 동일한 기능이 제공된다고 추정하지 않습니다.
 
-## Direct observations
+## 직접 관찰한 내용
 
-- Home: five bottom destinations (home, finance, products, benefits, stocks); an advisory banner; account and card summary cards; contextual action buttons alongside information.
-- Finance/bank: bank, card, securities and insurance subcategories; amount-visibility control; edit entry; account card, all-accounts entry and quick recipient-style items. The quick items' transaction results were not tested.
-- Products/discover: horizontally arranged categories, question-style search, featured offerings and interest chips.
-- Deposit detail: back, share, assistant and home controls; title, illustration and condition summary; fixed signup action. Global bottom tabs were absent on this detail screen.
-- Return: Android back returned from deposit detail to the products/discover list. This does not establish scroll preservation for every screen.
-- Benefits: benefits/events and convenience tabs; points, membership, coupons, participation items and an event notification.
-- Stocks: search, market summary, MY/interests/explore/information tabs and securities-provider selection. Further access required phone authentication for the observed account and was not tested.
-- All-menu entry: unified product/menu/benefit search; eight category icons; new/recent items and category-specific menus.
-- Bank assistant: domain selector, new conversation, history and close controls; suggested questions and a bottom composer. Selecting a general dormant-deposit help question produced numbered explanatory text and related bank/life service buttons beneath the response. Their destinations were not opened.
+- 홈: 홈, 금융, 상품, 혜택, 주식의 하단 목적지 5개, 안내 배너, 계좌·카드 요약 카드, 정보 옆의 맥락별 행동 버튼이 있었습니다.
+- 금융/은행: 은행, 카드, 증권, 보험 하위 분류, 금액 표시 제어, 편집 진입, 계좌 카드, 전체 계좌 진입, 빠른 수취인 형태의 항목이 있었습니다. 빠른 항목에서 실제 거래가 끝나는 과정은 테스트하지 않았습니다.
+- 상품/탐색: 가로로 배열된 분류, 질문형 검색, 주요 상품, 관심사 칩이 있었습니다.
+- 예금 상세: 뒤로, 공유, 도우미, 홈 조작 요소와 제목, 일러스트, 조건 요약, 고정 가입 버튼이 있었습니다. 이 상세 화면에서는 전역 하단 탭이 보이지 않았습니다.
+- 복귀: 안드로이드 뒤로 가기를 누르면 예금 상세에서 상품/탐색 목록으로 돌아왔습니다. 이 관찰만으로 모든 화면에서 스크롤 위치가 유지된다고 판단할 수는 없습니다.
+- 혜택: 혜택/이벤트와 편의 탭, 포인트, 멤버십, 쿠폰, 참여 항목, 이벤트 알림이 있었습니다.
+- 주식: 검색, 시장 요약, MY/관심/탐색/정보 탭, 증권사 선택이 있었습니다. 이후 단계는 관찰 계정에서 휴대폰 인증이 필요해 테스트하지 않았습니다.
+- 전체 메뉴: 상품·메뉴·혜택 통합 검색, 분류 아이콘 8개, 신규·최근 항목, 분류별 메뉴가 있었습니다.
+- 은행 도우미: 영역 선택, 새 대화, 기록, 닫기 조작과 추천 질문, 하단 입력창이 있었습니다. 휴면예금 관련 일반 안내 질문을 선택하면 번호가 있는 설명과 관련 은행·라이프 서비스 버튼이 답변 아래에 표시되었습니다. 버튼이 이동하는 화면은 열지 않았습니다.
 
-## Friction interpreted from those screens
+## 화면에서 해석한 불편 지점
 
-Large banners push working information down. Tall cards limit comparisons. Long horizontal categories can conceal later destinations. Small gray text needs contrast checks. Long assistant answers can bury the next action. These are design assessments, not measured usability-study results.
+큰 배너는 실제 업무 정보를 아래로 밀 수 있습니다. 높은 카드는 항목 간 비교를 어렵게 할 수 있습니다. 긴 가로 분류는 뒤쪽 목적지를 숨길 수 있습니다. 작은 회색 글자는 대비 확인이 필요합니다. 긴 도우미 답변은 다음 행동을 아래로 밀 수 있습니다. 이는 측정된 사용성 연구 결과가 아니라 화면을 바탕으로 한 설계 판단입니다.
 
-## Evidence boundaries
+## 근거 범위
 
-No signup, money transfer, payment, trading, authentication completion or preference change was performed. Do not claim transaction completion, validation quality, timing benchmarks, search-result behavior or generalized return-state guarantees from this inspection. No private screenshots or account-specific values are distributed with this skill.
+가입, 송금, 결제, 주식 거래, 인증 완료, 환경설정 변경은 수행하지 않았습니다. 거래 완료, 유효성 검사 품질, 처리 시간, 검색 결과 동작, 모든 화면의 복귀 상태 보장을 이 관찰로 확인했다고 말하지 않습니다. 비공개 화면 캡처와 계정별 수치는 이 스킬에 포함하지 않습니다.
 
-Public background links (published descriptions, not substitutes for direct testing):
+공개 배경 자료 링크이며 직접 테스트를 대신하지 않습니다.
+
 - https://apps.apple.com/kr/app/id357484932
 - https://shinhanin.com/2026/06/앱-하나로-한-번에-새로워진-신한-슈퍼sol이-온다/
 
-## Example adaptations
+## 업종별 적용 예시
 
-Travel operations: deadline → review reservation; passport → upload/review/save; entry question → command/explanation/source/copy; quote → client/itinerary/pricing/policy/review/export.
+- 여행사 운영: 마감 일정 → 예약 검토, 여권 → 업로드/검토/저장, 엔트리 질문 → 명령어/설명/출처/복사, 견적 → 고객/여정/금액/규정/검토/내보내기.
+- 재고 관리: 재고 부족 → 상품 검토 → 보충 초안 → 승인 → 완료 확인. 상품과 창고 식별자를 유지합니다.
+- 교육: 다가오는 과제 → 수업 과제 → 파일 제출 → 업로드 검토 → 완료 확인. 작성 내용을 유지하고 업로드 실패 시 재시도를 제공합니다.
+- 고객 지원: 미처리 이슈 → 티켓 상세 → 증빙과 답변 초안 → 검토 → 허가된 경우 전송 → 필터가 유지된 목록으로 복귀.
 
-Inventory: low stock → review product → replenish draft → approve → confirm. Preserve item and warehouse identity.
-
-Education: upcoming assignment → course task → submit file → review upload → confirmation. Preserve draft and show retry for upload failure.
-
-Support: open issue → ticket detail → evidence and reply draft → review → send when authorized → return to filtered queue.
-
-These are proposed mappings. Do not describe them as tested SuperSOL workflows.
+위 내용은 제안된 적용 방식입니다. 슈퍼SOL에서 테스트한 흐름이라고 설명하지 않습니다.
