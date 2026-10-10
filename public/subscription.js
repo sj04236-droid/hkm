@@ -13,35 +13,36 @@
     return data;
   }
 
-  function remaining(){return subscription.status==='active'?null:Math.max(0,subscription.limit-subscription.used);}
+  function remaining(){return subscription.status==='active'||subscription.status==='admin'?null:Math.max(0,subscription.limit-subscription.used);}
 
   function renderSubscription(){
-    const active=subscription.status==='active';
+    const admin=subscription.status==='admin';
+    const active=subscription.status==='active'||admin;
     const left=remaining();
     const authenticated=Boolean(account?.authenticated);
     const percent=active?100:Math.round(subscription.used/subscription.limit*100);
     document.getElementById('trialChip').classList.toggle('subscribed',active);
-    document.getElementById('trialChip').querySelector('span').textContent=active?'Pro 이용 중':authenticated?'무료 체험':'로그인 필요';
+    document.getElementById('trialChip').querySelector('span').textContent=admin?'관리자':active?'Pro 이용 중':authenticated?'무료 체험':'로그인 필요';
     document.getElementById('trialChipCount').textContent=active?'자동화 무제한':authenticated?`${left}회 남음`:'Google 로그인';
-    document.getElementById('planName').textContent=active?'Pro 월간':authenticated?'무료 체험':'로그인 전';
-    document.getElementById('workspacePillPlan').textContent=active?'Pro 월간':authenticated?`무료 ${left}회`:'로그인 필요';
-    document.getElementById('subscriptionStatusBadge').textContent=active?'구독 중':authenticated?(left?'체험 중':'무료 사용 완료'):'로그인 필요';
+    document.getElementById('planName').textContent=admin?'관리자 무제한':active?'Pro 월간':authenticated?'무료 체험':'로그인 전';
+    document.getElementById('workspacePillPlan').textContent=admin?'관리자':active?'Pro 월간':authenticated?`무료 ${left}회`:'로그인 필요';
+    document.getElementById('subscriptionStatusBadge').textContent=admin?'관리자':active?'구독 중':authenticated?(left?'체험 중':'무료 사용 완료'):'로그인 필요';
     document.getElementById('subscriptionStatusBadge').className=`badge ${active||left?'ok':'warn'}`;
-    document.getElementById('trialProgressValue').textContent=active?'무제한':authenticated?`${subscription.used} / ${subscription.limit}회`:'0 / 10회';
+    document.getElementById('trialProgressValue').textContent=admin?'무료 무제한':active?'무제한':authenticated?`${subscription.used} / ${subscription.limit}회`:'0 / 10회';
     document.getElementById('trialProgressBar').style.width=`${authenticated?percent:0}%`;
-    document.getElementById('trialRemainingText').textContent=active?'Pro 자동화 기능을 제한 없이 이용할 수 있습니다.':authenticated?(left?`${left}회 남았습니다.`:'무료 10회를 모두 사용했습니다.'):'Google 로그인 후 무료 10회가 시작됩니다.';
-    document.getElementById('subscriptionDialogStatus').textContent=active?'Pro 이용 중':authenticated?'무료 체험':'로그인 전';
+    document.getElementById('trialRemainingText').textContent=admin?'관리자 계정은 모든 자동화 기능을 무료로 제한 없이 이용합니다.':active?'Pro 자동화 기능을 제한 없이 이용할 수 있습니다.':authenticated?(left?`${left}회 남았습니다.`:'무료 10회를 모두 사용했습니다.'):'Google 로그인 후 무료 10회가 시작됩니다.';
+    document.getElementById('subscriptionDialogStatus').textContent=admin?'관리자 무료 이용':active?'Pro 이용 중':authenticated?'무료 체험':'로그인 전';
     document.getElementById('subscriptionDialogRemaining').textContent=active?'무제한':authenticated?`${left}회`:'10회';
     document.getElementById('continueTrialBtn').textContent=authenticated&&left?'남은 무료 사용 계속하기':'업무 화면으로 돌아가기';
     document.getElementById('loginPanel').classList.toggle('hidden',authenticated);
     document.getElementById('memberPanel').classList.toggle('hidden',!authenticated);
     document.getElementById('startSubscriptionBtn').disabled=!authenticated||!config.billingReady||active;
-    document.getElementById('startSubscriptionBtn').textContent=active?'Pro 구독 이용 중':config.billingReady?'Toss Payments 카드 등록':'결제 설정 확인 중';
+    document.getElementById('startSubscriptionBtn').textContent=admin?'관리자 계정 · 결제 불필요':active?'Pro 구독 이용 중':config.billingReady?'Toss Payments 카드 등록':'결제 설정 확인 중';
     if(authenticated){
       document.getElementById('memberName').textContent=account.user.name;
       document.getElementById('memberEmail').textContent=account.user.email;
       document.getElementById('accountChipName').textContent=account.user.name;
-      document.getElementById('accountChipEmail').textContent=active?'Pro 이용 중':`${left}회 남음`;
+      document.getElementById('accountChipEmail').textContent=admin?'무료 무제한 관리자':active?'Pro 이용 중':`${left}회 남음`;
       document.querySelector('.account-avatar').textContent=(account.user.name||'G').slice(0,1).toUpperCase();
     }else{
       document.getElementById('accountChipName').textContent='Google 로그인';
@@ -93,7 +94,7 @@
       const result=await api('/api/usage/consume',{method:'POST',body:JSON.stringify({feature})});
       subscription={used:result.used,limit:10,status:result.status};
       renderSubscription();
-      toast(`${featureLabels[feature]} · ${result.status==='active'?'Pro 무제한':`무료 사용 ${result.remaining}회 남음`}`);
+      toast(`${featureLabels[feature]} · ${result.status==='admin'?'관리자 무료 무제한':result.status==='active'?'Pro 무제한':`무료 사용 ${result.remaining}회 남음`}`);
       return true;
     }catch(error){
       if(error.status===401){account=null;openSubscription(feature);return false;}

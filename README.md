@@ -20,6 +20,7 @@
 - `SESSION_SECRET`: 로그인 세션 서명용 긴 임의 문자열
 - `BILLING_ENCRYPTION_KEY`: 빌링키 암호화용 32바이트 키의 Base64 값
 - `RENEWAL_SECRET`: 월 갱신 API 호출용 긴 임의 문자열
+- `ADMIN_EMAILS`: 무료 무제한 관리자 이메일 목록(쉼표로 구분, Sites 비밀값으로 저장)
 
 Google Cloud의 승인된 JavaScript 원본에는 `https://ops.lineuplounge.co.kr`을 등록합니다. Toss의 클라이언트 키와 시크릿 키는 같은 MID와 같은 테스트/라이브 환경의 키를 사용해야 합니다.
 

@@ -8,5 +8,6 @@ declare namespace Cloudflare {
     SESSION_SECRET?: string;
     BILLING_ENCRYPTION_KEY?: string;
     RENEWAL_SECRET?: string;
+    ADMIN_EMAILS?: string;
   }
 }

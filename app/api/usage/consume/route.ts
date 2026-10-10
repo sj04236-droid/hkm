@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { getSession } from "../../../../lib/auth-session";
+import { isUnlimitedAdmin } from "../../../../lib/admin-access";
 
 const FEATURES = new Set(["entry", "pnr", "passport", "quote"]);
 
@@ -8,6 +9,12 @@ export async function POST(request: Request) {
   if (!user) return Response.json({ error: "login_required" }, { status: 401 });
   const { feature } = (await request.json()) as { feature?: string };
   if (!feature || !FEATURES.has(feature)) return Response.json({ error: "invalid_feature" }, { status: 400 });
+  if (isUnlimitedAdmin(user.email, env.ADMIN_EMAILS)) {
+    const account = await env.DB.prepare("SELECT trial_used FROM accounts WHERE id = ?").bind(user.id).first<{ trial_used: number }>();
+    if (!account) return Response.json({ error: "account_not_found" }, { status: 404 });
+    await env.DB.prepare("INSERT INTO usage_events (id, user_id, feature) VALUES (?, ?, ?)").bind(crypto.randomUUID(), user.id, feature).run();
+    return Response.json({ allowed: true, used: account.trial_used, remaining: null, status: "admin" });
+  }
   const result = await env.DB.prepare(`
     UPDATE accounts
     SET trial_used = CASE WHEN subscription_status = 'active' THEN trial_used ELSE trial_used + 1 END,

@@ -22,3 +22,12 @@ test('active subscribers are not decremented',()=>{
   assert.equal(result.state.used,10);
   assert.equal(result.remaining,Infinity);
 });
+
+test('admin accounts are unlimited without incrementing usage',()=>{
+  const state=SubscriptionCore.normalize({status:'admin',used:7});
+  const result=SubscriptionCore.consume(state,'entry');
+  assert.equal(result.allowed,true);
+  assert.equal(result.state.status,'admin');
+  assert.equal(result.state.used,7);
+  assert.equal(result.remaining,Infinity);
+});
