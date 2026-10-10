@@ -18,7 +18,8 @@ function updateContextActions(name) {
   const actions = {
     dashboard: ['빠른 실행','search'], entries:['질문하기','entry'], pnr:['규정 정리','analyzePnrBtn'],
     customers:['고객 등록','customer'], passport:['확인 후 저장','passport'],
-    quotes:['견적 저장','saveQuoteBtn'], ledger:['거래 등록','ledger'], tasks:['일정 등록','task']
+    quotes:['견적 저장','saveQuoteBtn'], ledger:['거래 등록','ledger'], tasks:['일정 등록','task'],
+    workspace:['설정 저장','workspaceSaveBtn']
   };
   const [label, action] = actions[name];
   document.getElementById('contextActions').innerHTML = `${name==='quotes'?'<button class="button ghost" data-forward="printQuoteBtn">인쇄 / PDF</button>':''}<button class="button primary" data-action="${action}">${label}</button>`;
@@ -58,7 +59,8 @@ const searchItems=[
   ['dashboard','오늘 업무','홈 발권 마감 매출 손익'],['entries','GDS 엔트리 찾기','아마데우스 세이버 sabre amadeus 운임 명령어'],
   ['pnr','규정 분석','pnr 변경 환불 노쇼 수하물'],['customers','고객 찾기','crm 회사 이메일 마일리지'],
   ['passport','여권 업로드','apis 파일 일행 여행객'],['quotes','견적 작성','인보이스 invoice 항공편 tasf'],
-  ['ledger','매출·매입 장부','거래 지출 수익 부가세'],['tasks','마감 일정','발권 결제 기한 tkt']
+  ['ledger','매출·매입 장부','거래 지출 수익 부가세'],['tasks','마감 일정','발권 결제 기한 tkt'],
+  ['workspace','팀 · 구독 설정','여행사 기본정보 담당자 플랜 사용현황 워크스페이스']
 ];
 function renderWorkspaceSearch(){
   const query=searchInput.value.trim().toLowerCase();

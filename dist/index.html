@@ -7,6 +7,7 @@
   <title>ATR Travel Ops</title>
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./workspace.css" />
+  <link rel="stylesheet" href="./subscription.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -28,6 +29,7 @@
         <button class="nav-item" data-view="quotes"><span>▤</span>견적서</button>
         <button class="nav-item" data-view="ledger"><span>₩</span>매출·매입 장부</button>
         <button class="nav-item" data-view="tasks"><span>✓</span>마감 일정</button>
+        <button class="nav-item workspace-nav" data-view="workspace"><span>⚙</span>팀 · 구독 설정</button>
       </nav>
 
       <div class="sidebar-note">
@@ -44,7 +46,9 @@
           <h1 id="pageTitle">대시보드</h1>
         </div>
         <div class="top-actions">
+          <button class="trial-chip" id="trialChip" data-open-subscription aria-label="무료 사용량과 구독 확인"><span>무료 체험</span><strong id="trialChipCount">10회 남음</strong></button>
           <button class="button ghost" id="resetDemoBtn">데모 데이터 초기화</button>
+          <button class="workspace-pill" id="workspacePill" data-go="workspace" aria-label="팀 및 구독 설정 열기"><span class="workspace-pill-mark">A</span><span><strong id="workspacePillName">내 여행사</strong><small id="workspacePillPlan">Pro 체험</small></span></button>
           <button class="button search-trigger" id="workspaceSearchBtn" aria-label="전체 업무 검색">업무 검색 <small>Ctrl K</small></button><div class="context-actions" id="contextActions"></div>
         </div>
       </header>
@@ -58,6 +62,8 @@
           </div>
           <button class="button light" data-go="pnr">PNR 분석 시작 →</button>
         </div>
+
+        <div id="launchSetup" class="launch-setup"></div>
 
         <div class="metric-grid" id="taskMetrics"></div>
 
@@ -241,17 +247,68 @@
         </div>
         <div class="card"><div id="allTasks" class="task-list large"></div></div>
       </section>
+
+      <section class="view" id="view-workspace">
+        <div class="section-intro">
+          <div><p class="eyebrow">Workspace & subscription</p><h2>우리 여행사에 맞게 한 번 설정하고 팀이 같은 방식으로 일하게 합니다.</h2><p>견적서 발신정보, 담당자 정보와 현재 사용 현황을 한 곳에서 관리합니다. 지금 버전은 구독 서비스 런칭을 위한 워크스페이스 화면입니다.</p></div>
+        </div>
+
+        <div class="workspace-grid">
+          <article class="card plan-card">
+            <div class="card-head"><div><p class="eyebrow">현재 플랜</p><h3 id="planName">무료 체험</h3></div><span class="badge ok" id="subscriptionStatusBadge">체험 중</span></div>
+            <p class="plan-copy">회원마다 핵심 자동화 10회를 무료로 사용합니다. CRM 조회, 장부 열람과 저장된 자료 확인은 무료 횟수에서 차감하지 않습니다.</p>
+            <div class="trial-progress" aria-labelledby="trialProgressLabel"><div><span id="trialProgressLabel">무료 자동화 사용량</span><strong id="trialProgressValue">0 / 10회</strong></div><div class="trial-progress-track"><span id="trialProgressBar"></span></div><small id="trialRemainingText">10회 남았습니다.</small></div>
+            <div class="usage-grid" id="workspaceUsage"></div>
+            <div class="status-row"><span>월 이용료</span><strong>9,900원 / VAT 포함</strong></div>
+            <div class="status-row"><span>자동결제</span><strong id="billingConnectionLabel">Toss Payments 연결 준비</strong></div>
+            <button class="button primary full" type="button" data-open-subscription>무료 사용량·결제 관리</button>
+            <p class="helper-text">현재 공개 시험 버전의 사용량은 이 브라우저에 저장됩니다. 정식 결제 전에는 실제 요금이 청구되지 않습니다.</p>
+          </article>
+
+          <article class="card setup-card">
+            <div class="card-head"><div><p class="eyebrow">시작 설정</p><h3>런칭 준비 체크</h3></div><strong id="workspaceProgressLabel">0 / 3</strong></div>
+            <div class="setup-checklist" id="workspaceChecklist"></div>
+          </article>
+
+          <article class="card workspace-profile-card span-2">
+            <div class="card-head"><div><p class="eyebrow">회사 기본정보</p><h3>견적서와 업무 화면에 재사용</h3></div></div>
+            <form id="workspaceForm" class="form-grid">
+              <label>여행사 / 회사명<input class="input" name="agencyName" placeholder="예: ATR Travel" required></label>
+              <label>담당자명<input class="input" name="agentName" placeholder="예: 홍길동" required></label>
+              <label>업무 이메일<input class="input" type="email" name="email" placeholder="ops@example.com"></label>
+              <label>연락처<input class="input" name="phone" placeholder="02-0000-0000"></label>
+              <label>사업자등록번호<input class="input" name="businessNo"></label>
+              <label>기본 TASF (1인)<input class="input" type="number" min="0" name="defaultTasf" value="0"></label>
+              <label class="span-2">사업장 주소<input class="input" name="address"></label>
+              <label>플랜<input class="input" value="무료 10회 → Pro 월 9,900원" readonly aria-describedby="planHelp"><small id="planHelp" class="field-help">플랜은 결제 상태에 따라 자동으로 변경됩니다.</small></label>
+              <label>기본 GDS<select class="input" name="defaultGds"><option value="">매번 선택</option><option value="Amadeus">Amadeus</option><option value="Sabre/Abacus">Sabre / Abacus</option></select></label>
+              <div class="form-actions span-2"><button class="button primary" id="workspaceSaveBtn">설정 저장</button></div>
+            </form>
+          </article>
+        </div>
+      </section>
     </main>
   </div>
 
   <nav class="mobile-nav" aria-label="모바일 주요 업무"><button class="active" data-view="dashboard"><span aria-hidden="true">⌂</span>홈</button><button data-view="entries"><span aria-hidden="true">⌕</span>엔트리</button><button data-view="quotes"><span aria-hidden="true">▤</span>견적</button><button data-view="passport"><span aria-hidden="true">▣</span>여권</button><button id="moreNav"><span aria-hidden="true">☰</span>전체</button></nav><div class="mobile-actions hidden" id="mobileActions"></div>
   <dialog class="workspace-dialog" id="workspaceSearch" aria-labelledby="workspaceSearchTitle"><div class="dialog-head"><h2 id="workspaceSearchTitle">어떤 업무를 찾으세요?</h2><button class="icon-button" id="closeWorkspaceSearch" aria-label="검색 닫기">×</button></div><label for="workspaceSearchInput" class="field-label">업무 이름 검색</label><input class="input" id="workspaceSearchInput" placeholder="엔트리, 여권, 견적, 고객…" autocomplete="off"><div id="workspaceSearchResults" class="search-results" aria-live="polite"></div></dialog>
+  <dialog class="subscription-dialog" id="subscriptionDialog" aria-labelledby="subscriptionDialogTitle">
+    <div class="dialog-head"><div><p class="eyebrow">ATR Travel Ops Pro</p><h2 id="subscriptionDialogTitle">10회 무료로 확인하고 계속 이용하세요</h2></div><button class="icon-button" id="closeSubscriptionDialog" aria-label="구독 안내 닫기">×</button></div>
+    <div class="subscription-summary"><div><span>현재 상태</span><strong id="subscriptionDialogStatus">무료 체험</strong></div><div><span>남은 자동화</span><strong id="subscriptionDialogRemaining">10회</strong></div></div>
+    <div class="pricing-card"><div><p class="eyebrow">PRO MONTHLY</p><h3>월 9,900원 <small>VAT 포함</small></h3><p>여행사 실무자가 매일 사용하는 자동화 기능을 한 업무공간에서 제공합니다.</p></div><ul><li>Amadeus · Sabre/Abacus 엔트리 도우미</li><li>PNR·운임규정 한글 정리</li><li>여권 MRZ 인식과 APIS 입력</li><li>견적서·CRM·매출/매입 장부</li></ul></div>
+    <div class="billing-steps"><span><b>1</b>무료 10회 사용</span><span><b>2</b>카드 등록</span><span><b>3</b>매월 자동결제</span></div>
+    <div class="billing-notice" id="billingNotice"><strong>결제 연동 준비 단계</strong><p>Toss Payments 자동결제 계약과 상점 키가 연결된 뒤 카드 등록 버튼이 활성화됩니다. 연결 전에는 결제가 발생하지 않습니다.</p></div>
+    <button class="button primary full" id="startSubscriptionBtn" type="button">Toss Payments 결제수단 등록 준비</button>
+    <button class="text-button dialog-close-link" id="continueTrialBtn" type="button">남은 무료 사용 계속하기</button>
+  </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="./knowledge.js"></script>
   <script src="./ops-core.js"></script>
+  <script src="./subscription-core.js"></script>
   <script src="./app.js"></script>
   <script src="./workspace.js"></script>
+  <script src="./subscription.js"></script>
 </body>
 </html>

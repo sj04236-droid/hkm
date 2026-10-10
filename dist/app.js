@@ -4,6 +4,7 @@ const todayISO = () => new Date().toISOString().slice(0,10);
 const uid = p => `${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
 
 const demo = {
+  workspace:{agencyName:'',agentName:'',email:'',phone:'',businessNo:'',address:'',defaultTasf:0,plan:'Pro 체험',defaultGds:''},
   customers:[
     {id:'c1',nameKo:'데모고객A',nameEn:'DEMO/CUSTOMER-A',birth:'',phone:'',email:'',company:'샘플회사A',department:'출장지원팀',title:'담당자',mileage:'DEMO-KE-001',seat:'통로',note:'명백한 가상 데모 데이터'},
     {id:'c2',nameKo:'데모고객B',nameEn:'DEMO/CUSTOMER-B',birth:'',phone:'',email:'',company:'샘플회사B',department:'경영지원팀',title:'담당자',mileage:'DEMO-OZ-002',seat:'창가',note:'명백한 가상 데모 데이터'}
@@ -24,13 +25,14 @@ const demo = {
 
 const entryKB = manualEntries;
 let state = loadState();
+if(!state.workspace) state.workspace=structuredClone(demo.workspace);
 if(!state.passportRecords) state.passportRecords=Object.entries(state.passports||{}).map(([id,p])=>({...p,id,party:'기존 등록',legacyCustomerId:id}));
 function loadState(){ try{ return {...structuredClone(demo), ...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}; }catch{return structuredClone(demo);} }
 function saveState(){ try{localStorage.setItem(STORE_KEY, JSON.stringify(state));renderAll();return true;}catch(error){toast('저장공간이 부족합니다. 원본 파일 없이 저장해주세요.');return false;} }
 function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>el.classList.remove('show'),1800); }
 function escapeHtml(s=''){ return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 
-const titles={dashboard:'대시보드',entries:'엔트리 도우미',pnr:'PNR·규정 분석',customers:'고객 CRM',passport:'여권·APIS',quotes:'견적서',ledger:'매출·매입 장부',tasks:'마감 일정'};
+const titles={dashboard:'대시보드',entries:'엔트리 도우미',pnr:'PNR·규정 분석',customers:'고객 CRM',passport:'여권·APIS',quotes:'견적서',ledger:'매출·매입 장부',tasks:'마감 일정',workspace:'팀 · 구독 설정'};
 function showView(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${name}`));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===name));
@@ -51,8 +53,62 @@ function renderDashboard(){
   const pTypes=['현금','카드','계좌이체']; document.getElementById('paymentBreakdown').innerHTML=pTypes.map(p=>{const total=rows.filter(x=>x.payment===p).reduce((a,x)=>a+Number(x.sales||0),0);return `<div class="payment-chip"><span>${p} 매출</span><strong>${won(total)}</strong></div>`}).join('');
   renderTaskList('todayTasks',today.slice(0,5));
   document.getElementById('recentLedger').innerHTML=state.ledger.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(x=>`<div class="compact-item"><div><strong>${escapeHtml(x.item)}</strong><small>${x.date} · ${escapeHtml(x.payment)}</small></div><div class="amount">${won(x.sales)}</div></div>`).join('')||'<div class="empty-state">거래가 없습니다.</div>';
+  renderLaunchSetup();
 }
 function renderTaskList(id,rows){ document.getElementById(id).innerHTML=rows.length?rows.map(t=>`<div class="task-row"><div class="task-time">${escapeHtml(t.time||'--:--')}</div><div><strong>${escapeHtml(t.client)}</strong><p>${escapeHtml(t.detail)}</p></div><div class="task-end"><span class="badge ${t.type==='TKT TL'?'warn':''}">${escapeHtml(t.type)}</span><button class="text-button" data-go="${t.type==='여권/APIS'?'passport':'tasks'}">업무 보기 →</button></div></div>`).join(''):'<div class="empty-state">오늘 마감 일정이 없습니다.</div>'; }
+
+function workspaceSteps(){
+  const w=state.workspace||{};
+  return [
+    {label:'여행사와 담당자 정보 등록',done:Boolean(w.agencyName&&w.agentName),view:'workspace'},
+    {label:'견적 발신정보 등록',done:Boolean(w.phone&&w.businessNo&&w.address),view:'workspace'},
+    {label:'첫 견적 저장',done:state.quotes.length>0,view:'quotes'}
+  ];
+}
+function renderLaunchSetup(){
+  const el=document.getElementById('launchSetup'); if(!el)return;
+  const steps=workspaceSteps(),done=steps.filter(x=>x.done).length,next=steps.find(x=>!x.done);
+  if(done===steps.length){
+    el.innerHTML=`<div class="launch-complete"><div><span class="badge ok">업무공간 준비 완료</span><strong>${escapeHtml(state.workspace.agencyName||'내 여행사')}</strong><small>기본 설정이 끝났습니다. 오늘 마감 업무부터 처리하세요.</small></div><button class="text-button" data-go="workspace">팀 · 구독 설정 →</button></div>`;
+    return;
+  }
+  el.innerHTML=`<div class="launch-copy"><p class="eyebrow">첫 사용 가이드</p><strong>업무공간 준비 ${done} / ${steps.length}</strong><small>처음 3가지만 설정하면 견적과 고객 업무를 더 빠르게 시작할 수 있습니다.</small></div><div class="setup-progress" aria-label="업무공간 준비 단계">${steps.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓':'○'} ${escapeHtml(x.label)}</span>`).join('')}</div><button class="button primary" data-go="${next?.view||'workspace'}">다음 설정</button>`;
+}
+
+function renderWorkspace(){
+  const w=state.workspace||demo.workspace, form=document.getElementById('workspaceForm'); if(!form)return;
+  Object.entries(w).forEach(([k,v])=>{if(form.elements[k])form.elements[k].value=v??'';});
+  document.getElementById('workspacePillName').textContent=w.agencyName||'내 여행사';
+  document.getElementById('workspacePillPlan').textContent=w.plan||'Pro 체험';
+  document.getElementById('planName').textContent=w.plan||'Pro 체험';
+  const month=todayISO().slice(0,7),monthQuotes=state.quotes.filter(q=>(q.date||'').startsWith(month)).length;
+  document.getElementById('workspaceUsage').innerHTML=[['고객',state.customers.length],['이번 달 견적',monthQuotes],['여권 기록',state.passportRecords.length],['미완료 일정',state.tasks.filter(t=>!t.done).length]].map(([label,value])=>`<div><span>${label}</span><strong>${value}</strong></div>`).join('');
+  const steps=workspaceSteps(),done=steps.filter(x=>x.done).length;
+  document.getElementById('workspaceProgressLabel').textContent=`${done} / ${steps.length}`;
+  document.getElementById('workspaceChecklist').innerHTML=steps.map((x,i)=>`<button type="button" class="setup-check ${x.done?'done':''}" data-go="${x.view}"><span>${x.done?'✓':i+1}</span><div><strong>${escapeHtml(x.label)}</strong><small>${x.done?'완료':'설정하기'}</small></div><b>→</b></button>`).join('');
+}
+
+function applyWorkspaceDefaults(){
+  const w=state.workspace||{}, form=document.getElementById('quoteForm');
+  if(form&&!form.dataset.defaultsApplied){
+    if(!form.elements.supplier.value) form.elements.supplier.value=w.agencyName||'';
+    if(!form.elements.supplierContact.value) form.elements.supplierContact.value=[w.agentName,w.phone].filter(Boolean).join(' / ');
+    if(!form.elements.businessNo.value) form.elements.businessNo.value=w.businessNo||'';
+    if(!form.elements.supplierAddress.value) form.elements.supplierAddress.value=w.address||'';
+    if(Number(form.elements.service.value||0)===0&&Number(w.defaultTasf||0)>0) form.elements.service.value=Number(w.defaultTasf);
+    form.dataset.defaultsApplied='1';
+  }
+  const gds=document.getElementById('entryGds');
+  if(gds&&!gds.value&&w.defaultGds) gds.value=w.defaultGds;
+}
+
+document.getElementById('workspaceForm').onsubmit=e=>{
+  e.preventDefault();
+  const form=e.currentTarget,data=Object.fromEntries(new FormData(form).entries());data.defaultTasf=Number(data.defaultTasf||0);
+  state.workspace={...state.workspace,...data};
+  document.getElementById('quoteForm').dataset.defaultsApplied='';
+  if(saveState()){applyWorkspaceDefaults();renderWorkspace();renderQuotePreview();toast('워크스페이스 설정을 저장했습니다.');}
+};
 
 function entryCard(x){return `<article class="entry-card"><div class="entry-meta"><span class="badge">${x.gds}</span><span>${escapeHtml((x.source||'검증된 엔트리 DB')+(x.page?' · '+x.page+'쪽':''))}</span></div><h3>${escapeHtml(x.title)}</h3><div class="entry-code"><code>${escapeHtml(x.code)}</code><button data-copy="${escapeHtml(x.code)}">복사</button></div><p>${escapeHtml(x.desc)}</p>${x.guide?`<p class="entry-guide">${escapeHtml(x.guide)}</p>`:''}</article>`;}
 function renderEntries(forceAnswer=false){
@@ -239,7 +295,7 @@ document.getElementById('ledgerBody').onclick=e=>{const id=e.target.closest('[da
 function renderTasks(){const rows=state.tasks.slice().sort((a,b)=>`${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));document.getElementById('allTasks').innerHTML=rows.map(t=>`<div class="task-row"><div class="task-date">${t.date.slice(5)}</div><div class="task-time">${escapeHtml(t.time||'--:--')}</div><div><strong>${escapeHtml(t.client)} · ${escapeHtml(t.type)}</strong><p>${escapeHtml(t.detail)}</p></div><button class="delete-btn" data-del-task="${t.id}">삭제</button></div>`).join('')||'<div class="empty-state">등록된 일정이 없습니다.</div>';}
 document.getElementById('toggleTaskForm').onclick=()=>{document.getElementById('taskFormCard').classList.toggle('hidden');document.querySelector('#taskForm [name=date]').value=todayISO();};document.getElementById('taskForm').onsubmit=e=>{e.preventDefault();state.tasks.push({id:uid('t'),...Object.fromEntries(new FormData(e.currentTarget).entries()),done:false});e.currentTarget.reset();document.getElementById('taskFormCard').classList.add('hidden');saveState();toast('마감 일정을 추가했습니다.');};document.getElementById('allTasks').onclick=e=>{const id=e.target.closest('[data-del-task]')?.dataset.delTask;if(id){state.tasks=state.tasks.filter(x=>x.id!==id);saveState();}};
 
-function renderAll(){renderDashboard();renderEntries();renderCustomers();renderPassports();renderLedger();renderTasks();renderQuotePreview();if(state.lastAnalysis)renderAnalysis(state.lastAnalysis);}
+function renderAll(){applyWorkspaceDefaults();renderDashboard();renderEntries();renderCustomers();renderPassports();renderLedger();renderTasks();renderWorkspace();renderQuotePreview();if(state.lastAnalysis)renderAnalysis(state.lastAnalysis);}
 document.getElementById('resetDemoBtn').onclick=()=>{if(confirm('현재 브라우저에 저장한 데이터를 데모 상태로 초기화할까요?')){state=structuredClone(demo);state.passportRecords=[];localStorage.setItem(STORE_KEY,JSON.stringify(state));renderAll();toast('데모 데이터로 초기화했습니다.');}};
 document.getElementById('todayLabel').textContent=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'}).format(new Date());
 renderAll();
